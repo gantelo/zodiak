@@ -1,14 +1,13 @@
-package main
+package utils
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func Scrapper(url string) {
+func Scrapper(url string) string {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -25,5 +24,9 @@ func Scrapper(url string) {
 
 	secondParagraph := divs.First().Find("p").Last().Text()
 
-	fmt.Println(secondParagraph)
+	if len(secondParagraph) == 0 {
+		log.Fatal("no second paragraph")
+	}
+
+	return secondParagraph
 }
