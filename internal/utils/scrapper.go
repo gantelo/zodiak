@@ -3,7 +3,7 @@ package utils
 import (
 	"log"
 	"net/http"
-	"os"
+	"zodiak/internal/config"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -21,11 +21,7 @@ func Scrapper(url string) string {
 		log.Fatal(err)
 	}
 
-	class, exists := os.LookupEnv("SCRAP_CLASS")
-
-	if !exists {
-		log.Fatal("No SCRAP_CLASS found")
-	}
+	class := config.GetEnvVar("SCRAP_CLASS")
 
 	divs := doc.Find(class)
 

@@ -140,12 +140,11 @@ func (c *Client) translate(ctx context.Context, text string, targetLang Language
 	req.Header.Add("Authorization", "DeepL-Auth-Key "+c.authKey)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	// body, err := httputil.DumpRequest(req, true)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("do request: %w", err)
 	}
-	// fmt.Println(string(body))
+
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {

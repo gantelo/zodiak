@@ -23,8 +23,9 @@ var task = func() {
 }
 
 func main() {
+	utils.DailyTask()
 	s := gocron.NewScheduler(time.UTC)
 
-	_, _ = s.Every("2m").Do(task)
+	s.Every(1).Day().At("8:00").Do(task)
 	s.StartBlocking()
 }

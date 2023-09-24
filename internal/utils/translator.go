@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
+	"zodiak/internal/config"
 	"zodiak/internal/deepl"
 )
 
@@ -14,11 +14,8 @@ type DeepLService struct {
 }
 
 func NewDeepLService() *DeepLService {
-	apiKey, exists := os.LookupEnv("DEEPL_API_KEY")
+	apiKey := config.GetEnvVar("DEEPL_API_KEY")
 
-	if !exists {
-		log.Fatal("No DEEPL_API_KEY file found")
-	}
 	return &DeepLService{
 		client: deepl.New(apiKey),
 	}

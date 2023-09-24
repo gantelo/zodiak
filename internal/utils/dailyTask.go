@@ -3,8 +3,9 @@ package utils
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
+	"zodiak/internal/config"
+	"zodiak/internal/x"
 )
 
 func DailyTask() {
@@ -20,11 +21,7 @@ func DailyTask() {
 }
 
 func dailyTask(sign string) {
-	web, exists := os.LookupEnv("SCRAP_WEB")
-
-	if !exists {
-		log.Fatal("No SCRAP_WEB found")
-	}
+	web := config.GetEnvVar("SCRAP_WEB")
 
 	dailyHoroscope := Scrapper(web + sign + SUFFIX)
 	service := NewDeepLService()
@@ -34,5 +31,8 @@ func dailyTask(sign string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("#%s \r\n %s", zodiacSigns[sign], translation)
+	tweet := translation + "\n#" + zodiacSigns[sign] + " #horoscopo #diario"
+
+	x.Tweet(tweet)
+	fmt.Println(tweet)
 }
