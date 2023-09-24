@@ -13,9 +13,11 @@ require (
 )
 
 require (
-	github.com/dghubble/oauth1 v0.7.2 // indirect
-	github.com/g8rswimmer/go-twitter/v2 v2.1.5 // indirect
-	github.com/go-co-op/gocron v1.34.2 // indirect
+	github.com/dghubble/oauth1 v0.7.2
+	github.com/go-co-op/gocron v1.34.2
+)
+
+require (
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
