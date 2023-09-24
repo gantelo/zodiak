@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-
+	"time"
 	"zodiak/internal/utils"
 
+	"github.com/go-co-op/gocron"
 	"github.com/joho/godotenv"
 )
 
@@ -16,14 +17,14 @@ func init() {
 	}
 }
 
+var task = func() {
+	fmt.Println("Started!!!")
+	utils.DailyTask()
+}
+
 func main() {
-	dailyHoroscope := utils.Scrapper("https://www.example.com/")
-	service := utils.NewDeepLService()
+	s := gocron.NewScheduler(time.UTC)
 
-	translation, err := service.TranslateToSpanish(dailyHoroscope)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Translated text: ", translation)
+	_, _ = s.Every("2m").Do(task)
+	s.StartBlocking()
 }

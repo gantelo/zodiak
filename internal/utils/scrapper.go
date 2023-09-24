@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -20,7 +21,13 @@ func Scrapper(url string) string {
 		log.Fatal(err)
 	}
 
-	divs := doc.Find(".horo_des_d")
+	class, exists := os.LookupEnv("SCRAP_CLASS")
+
+	if !exists {
+		log.Fatal("No SCRAP_CLASS found")
+	}
+
+	divs := doc.Find(class)
 
 	secondParagraph := divs.First().Find("p").Last().Text()
 
