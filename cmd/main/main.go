@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"embed"
+	"html/template"
 	"log"
+	"net/http"
+	"os"
 	"time"
 	"zodiak/internal/utils"
 
@@ -13,19 +16,40 @@ import (
 func init() {
 	// loads values from .env into the system
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("No .env file found")
+		log.Print("No .env file found")
 	}
 }
 
-var task = func() {
-	fmt.Println("Started!!!")
-	utils.DailyTask()
-}
-
-func main() {
-	utils.DailyTask()
+func starter() {
+	log.Println("Starting cron job")
 	s := gocron.NewScheduler(time.UTC)
 
-	s.Every(1).Day().At("8:00").Do(task)
-	s.StartBlocking()
+	s.Every(1).Day().At("8:00").Do(utils.DailyTask)
+	s.StartAsync()
+}
+
+//go:embed templates/*
+var resources embed.FS
+
+var t = template.Must(template.ParseFS(resources, "templates/*"))
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := map[string]string{
+			"Region": os.Getenv("FLY_REGION"),
+		}
+
+		t.ExecuteTemplate(w, "index.html.tmpl", data)
+	})
+
+	log.Println("listening on", port)
+	go http.ListenAndServe("0.0.0.0:8080", nil)
+
+	starter()
 }
