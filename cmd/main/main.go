@@ -24,7 +24,7 @@ func starter() {
 	log.Println("Starting cron job")
 	s := gocron.NewScheduler(time.UTC)
 
-	s.Every(1).Day().At("8:00").Do(utils.DailyTask)
+	s.Every(1).Day().At("10:00").Do(utils.DailyTask)
 	s.StartAsync()
 }
 

@@ -19,4 +19,4 @@ var zodiacSigns = map[string]string{
 
 var SUFFIX = "/daily/"
 
-var TIME_BETWEEN_POSTS = 15 * time.Minute
+var TIME_BETWEEN_POSTS = 12 * time.Minute

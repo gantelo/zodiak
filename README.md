@@ -2,9 +2,10 @@
 
 This is an automated bot for X that scraps horoscopes in a web and translates them to spanish and then posts them.
 
-The job is run daily at 8:00 am UTC and each post has a 15 minute delay between them to avoid too many requests and data in a row.
+The job is run daily at 10:00 am UTC and each post has a 15 minute delay between them to avoid too many requests and data in a row.
 
 [Link to bot](https://twitter.com/HoroscoPollo)
+
 ![Profile pic](assets/image.png)
 
 # Want to clone/fork?
