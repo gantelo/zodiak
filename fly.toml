@@ -16,6 +16,10 @@ primary_region = "scl"
 [env]
   PORT = "8080"
 
+[[statics]]
+guest_path = "/app/dist"
+url_prefix = "/assets"
+
 [http_service]
   internal_port = 8080
   force_https = true
