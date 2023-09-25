@@ -101,7 +101,7 @@ func loadFontFace(file fs.File) (font.Face, error) {
 		return nil, err
 	}
 	face := truetype.NewFace(f, &truetype.Options{
-		Size: 47, // 7 BOCA
+		Size: 45, // 7 BOCA
 	})
 	return face, nil
 }
