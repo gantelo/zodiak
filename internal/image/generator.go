@@ -1,75 +1,85 @@
 package image
 
 import (
+	"embed"
 	"flag"
 	"image"
 	"image/color"
+	"io"
+	"io/fs"
 	"log"
 	"zodiak/internal/x"
 
 	"github.com/fogleman/gg"
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
 )
 
-type Request struct {
-	BgImgPath string
-	FontPath  string
-	FontSize  float64
-	Text      string
-}
+var Assets embed.FS
 
 func GenerateBg(sign string, horoscope string) {
 	imgPath := "assets/" + sign + "pollo.png"
 
-	var (
-		fontSize          = flag.Float64("fontSize", 50, "font fontSize in points")
-		fontPath          = flag.String("fontPath", "assets/SFProText-Bold.ttf", "filename of the ttf font")
-		backgroundImgPath = flag.String("bgImg", imgPath, "image to use as background")
-		text              = flag.String("text", horoscope, "text to print on the image")
-		outputPath        = flag.String("output", "assets/cool_img.png", "output path for the resulting image")
-	)
+	file, err := Assets.Open(imgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	im, _, err := image.Decode(file)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fontPathx, err := Assets.Open("assets/SFProText-Bold.ttf")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fontPathx.Close()
+
+	fpx, err := loadFontFace(fontPathx)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	outputPath := "out.png"
 
 	flag.Parse()
 	img, err := textOnImg(
-		Request{
-			BgImgPath: *backgroundImgPath,
-			FontPath:  *fontPath,
-			FontSize:  *fontSize,
-			Text:      *text,
-		},
+		horoscope,
+		im,
+		fpx,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := save(img, *outputPath); err != nil {
+	if err := save(img, outputPath); err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("image saved on [", *outputPath, "]")
+	log.Println("image saved on [", outputPath, "]")
 
 	x.UploadImage(sign)
 }
 
-func textOnImg(request Request) (image.Image, error) {
-	bgImage, err := gg.LoadImage(request.BgImgPath)
-	if err != nil {
-		return nil, err
-	}
+func textOnImg(text string, xd image.Image, fpx font.Face) (image.Image, error) {
+	bgImage := xd
 	imgWidth := bgImage.Bounds().Dx()
 	imgHeight := bgImage.Bounds().Dy()
 
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(bgImage, 0, 0)
 
-	if err := dc.LoadFontFace(request.FontPath, request.FontSize); err != nil {
-		return nil, err
-	}
+	dc.SetFontFace(fpx)
 
 	x := float64(imgWidth / 2)
-	y := float64((imgHeight / 2) - 40)
+	y := float64((imgHeight / 2) - 30)
 	maxWidth := float64(imgWidth) - 60.0
 	dc.SetColor(color.White)
-	dc.DrawStringWrapped(request.Text, x, y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
+	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
 
 	return dc.Image(), nil
 }
@@ -79,4 +89,19 @@ func save(img image.Image, path string) error {
 		return err
 	}
 	return nil
+}
+
+func loadFontFace(file fs.File) (font.Face, error) {
+	b1, err := io.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	f, err := truetype.Parse(b1)
+	if err != nil {
+		return nil, err
+	}
+	face := truetype.NewFace(f, &truetype.Options{
+		Size: 44,
+	})
+	return face, nil
 }

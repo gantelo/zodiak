@@ -74,7 +74,7 @@ func UploadImage(sign string) {
 		panic(err)
 	}
 
-	opened, err := os.Open("assets/cool_img.png")
+	opened, err := os.Open("out.png")
 	if err != nil {
 		panic(err)
 	}

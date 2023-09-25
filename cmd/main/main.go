@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"zodiak/internal/image"
 	"zodiak/internal/utils"
 
 	"github.com/go-co-op/gocron"
@@ -30,9 +31,14 @@ func init() {
 //go:embed templates/*
 var resources embed.FS
 
+//go:embed assets/*
+var assets embed.FS
+
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 func main() {
+	image.Assets = assets
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
