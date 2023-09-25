@@ -76,7 +76,7 @@ func textOnImg(text string, xd image.Image, fpx font.Face) (image.Image, error) 
 	dc.SetFontFace(fpx)
 
 	x := float64(imgWidth / 2)
-	y := float64((imgHeight / 2) - 30)
+	y := float64((imgHeight / 2) - 15)
 	maxWidth := float64(imgWidth) - 60.0
 	dc.SetColor(color.White)
 	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
