@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -46,6 +47,20 @@ func main() {
 		}
 
 		t.ExecuteTemplate(w, "index.html.tmpl", data)
+	})
+
+	http.HandleFunc("/xd", func(w http.ResponseWriter, r *http.Request) {
+		sign := r.FormValue("sign")
+		reqPass := r.FormValue("pass")
+
+		pass := os.Getenv("API_PASS")
+
+		if pass == reqPass {
+			utils.SingleTask(sign)
+			fmt.Fprintf(w, "Ok, %s!", sign)
+		} else {
+			log.Printf("xd, no!!, %s", r.RemoteAddr)
+		}
 	})
 
 	log.Println("listening on", port)

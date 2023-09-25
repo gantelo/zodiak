@@ -2,6 +2,7 @@ package utils
 
 import (
 	"log"
+	"strings"
 	"time"
 	"zodiak/internal/config"
 	"zodiak/internal/x"
@@ -33,8 +34,16 @@ func dailyTask(sign string) {
 	log.Println("END TRANSLATE: ", translation)
 
 	log.Println("BEGIN TWEET")
-	tweet := translation + "\n#" + zodiacSigns[sign] + " #horoscopo #diario"
+
+	esSign := zodiacSigns[sign]
+	pascalCaseSign := strings.ToUpper(esSign[:1]) + esSign[1:]
+
+	tweet := pascalCaseSign + ": " + translation + "\n#" + esSign + " #horoscopo #diario"
 
 	x.Tweet(tweet)
 	log.Println("END TWEET: ", tweet)
+}
+
+func SingleTask(sign string) {
+	dailyTask(sign)
 }
