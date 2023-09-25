@@ -42,7 +42,13 @@ func dailyTask(sign string) {
 	esSign := zodiacSigns[sign]
 	pascalCaseSign := strings.ToUpper(esSign[:1]) + esSign[1:]
 
-	tweet := pascalCaseSign + ": " + translation + "\n#" + esSign + " #horoscopo #diario"
+	tweet := pascalCaseSign + ": " + translation
+
+	if len(tweet) <= 254 {
+		tweet = tweet + "\n#" + esSign + " #horoscopo #diario"
+	} else {
+		tweet = tweet[:280]
+	}
 
 	x.Tweet(tweet)
 	log.Println("END TWEET: ", tweet)

@@ -15,10 +15,16 @@ import (
 )
 
 func init() {
-	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+	_, exists := os.LookupEnv("X_API_KEY")
+
+	if !exists {
+		if err := godotenv.Load(); err != nil {
+			log.Print("No .env file found")
+			log.Fatalf("No secrets nor .env file found")
+		}
+
 	}
+
 }
 
 //go:embed templates/*
@@ -49,7 +55,7 @@ func main() {
 
 		if pass == reqPass {
 			utils.SingleTask(sign)
-			io.WriteString(w, "Hello from a HandleFunc #2!\n")
+			io.WriteString(w, "Added for "+sign+"!\n")
 		} else {
 			io.WriteString(w, "xd, no!!, "+r.RemoteAddr)
 		}
