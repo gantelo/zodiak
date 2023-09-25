@@ -21,14 +21,6 @@ func init() {
 	}
 }
 
-func starter() {
-	log.Println("Starting cron job")
-	s := gocron.NewScheduler(time.UTC)
-
-	s.Every(1).Day().At("10:00").Do(utils.DailyTask)
-	s.StartAsync()
-}
-
 //go:embed templates/*
 var resources embed.FS
 
@@ -66,5 +58,9 @@ func main() {
 	log.Println("listening on", port)
 	go http.ListenAndServe("0.0.0.0:8080", nil)
 
-	starter()
+	log.Println("Starting cron job")
+	s := gocron.NewScheduler(time.UTC)
+
+	s.Every(1).Day().At("10:00").Do(utils.DailyTask)
+	s.StartBlocking()
 }

@@ -17,6 +17,10 @@ func DailyTask() {
 	}
 }
 
+func SingleTask(sign string) {
+	dailyTask(sign)
+}
+
 func dailyTask(sign string) {
 	web := config.GetEnvVar("SCRAP_WEB")
 
@@ -42,8 +46,4 @@ func dailyTask(sign string) {
 
 	x.Tweet(tweet)
 	log.Println("END TWEET: ", tweet)
-}
-
-func SingleTask(sign string) {
-	dailyTask(sign)
 }

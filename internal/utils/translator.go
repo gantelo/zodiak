@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"zodiak/internal/config"
 	"zodiak/internal/deepl"
@@ -32,7 +31,7 @@ func (s *DeepLService) TranslateToSpanish(text string) (string, error) {
 	if err != nil {
 		var deeplError deepl.Error
 		if errors.As(err, &deeplError) {
-			log.Fatal(fmt.Sprintf("deepl api error code %d: %s", deeplError.Code, deeplError.Error()))
+			log.Fatalf("deepl api error code %d: %s", deeplError.Code, deeplError.Error())
 		}
 		return "", err
 	}
