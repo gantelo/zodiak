@@ -2,8 +2,8 @@ package main
 
 import (
 	"embed"
-	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -57,9 +57,9 @@ func main() {
 
 		if pass == reqPass {
 			utils.SingleTask(sign)
-			fmt.Fprintf(w, "Ok, %s!", sign)
+			io.WriteString(w, "Hello from a HandleFunc #2!\n")
 		} else {
-			log.Printf("xd, no!!, %s", r.RemoteAddr)
+			io.WriteString(w, "xd, no!!, "+r.RemoteAddr)
 		}
 	})
 
