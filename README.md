@@ -43,7 +43,7 @@ Take a look into the lines in `scrapper.go`
 >
 >	secondParagraph := divs.First().Find("p").Last().Text()
 
-Basically, for my use case, it gets the `<div className=".class-here">` and takes the last `<p>`, which I base as the text for the bot.
+Basically, for my use case, it gets the `<div className=".class-here">` and takes the first and last `<p>`, which I base as the text for the bot.
 
 Then, it just plays with the translation and such.
 

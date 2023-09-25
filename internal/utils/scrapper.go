@@ -25,11 +25,12 @@ func Scrapper(url string) string {
 
 	divs := doc.Find(class)
 
+	firstParagraph := divs.First().Find("p").First().Text()
 	secondParagraph := divs.First().Find("p").Last().Text()
 
 	if len(secondParagraph) == 0 {
 		log.Fatal("no second paragraph")
 	}
 
-	return secondParagraph
+	return firstParagraph + secondParagraph
 }
