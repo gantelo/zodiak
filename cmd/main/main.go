@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"zodiak/internal/config"
 	"zodiak/internal/images"
 	"zodiak/internal/utils"
 
@@ -72,6 +73,6 @@ func main() {
 	log.Println("Starting cron job")
 	s := gocron.NewScheduler(time.UTC)
 
-	s.Every(1).Day().At("10:00").Do(utils.DailyTask)
+	s.Every(1).Day().At(config.START_DAILY_TASK_HOUR).Do(utils.DailyTask)
 	s.StartBlocking()
 }

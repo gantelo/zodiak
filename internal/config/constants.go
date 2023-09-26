@@ -19,7 +19,8 @@ var ZodiacSigns = map[string]string{
 
 var WEB_SUFFIX = "/daily/"
 
-var TIME_BETWEEN_POSTS = 12 * time.Minute
+var START_DAILY_TASK_HOUR = "10:00"
+var TIME_BETWEEN_POSTS = 25 * time.Minute
 
 var FONT_PATH = "assets/SFProText-Bold.ttf"
 var IMG_OUTPUT_PATH = "out.png"
