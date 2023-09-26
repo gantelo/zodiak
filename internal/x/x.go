@@ -3,12 +3,13 @@ package x
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
+	"net/http"
 	"os"
 	"zodiak/internal/config"
+	"zodiak/internal/images"
 
 	"github.com/dghubble/oauth1"
 )
@@ -20,22 +21,31 @@ type XAuth struct {
 	xAccessTokenSecret string
 }
 
-func Tweet(tweetText string, mediaIds []string) {
-	xAuth := getXAuth()
+type Media struct {
+	MediaIds []string `json:"media_ids"`
+}
 
-	config := oauth1.NewConfig(xAuth.xAPIKey, xAuth.xAPIKeySecret)
-	token := oauth1.NewToken(xAuth.xAccessToken, xAuth.xAccessTokenSecret)
+type TweetBody struct {
+	Text  string `json:"text"`
+	Media Media  `json:"media"`
+}
 
-	xHttpClient := config.Client(oauth1.NoContext, token)
+type MediaIdX struct {
+	MediaIdString string `json:"media_id_string"`
+}
 
-	type Media struct {
-		MediaIds []string `json:"media_ids"`
-	}
+func Tweet(sign string, tweet string) {
+	log.Println("Tweet begins")
 
-	type TweetBody struct {
-		Text  string `json:"text"`
-		Media Media  `json:"media"`
-	}
+	images.GenerateImageFromTemplate(sign, tweet)
+
+	uploadImage(sign)
+
+	log.Printf("Tweet success, length: %d\n", len(tweet))
+}
+
+func sendToX(tweetText string, mediaIds []string) {
+	xHttpClient := getXHttpClient()
 
 	tweetBody := TweetBody{Text: tweetText, Media: Media{MediaIds: mediaIds}}
 
@@ -54,34 +64,35 @@ func Tweet(tweetText string, mediaIds []string) {
 	}
 
 	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Printf("Raw Response Body:\n%v\n", string(body))
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Success tweet body:\n%v\n", string(body))
 }
 
-func UploadImage(sign string) {
-	xAuth := getXAuth()
-
-	config := oauth1.NewConfig(xAuth.xAPIKey, xAuth.xAPIKeySecret)
-	token := oauth1.NewToken(xAuth.xAccessToken, xAuth.xAccessTokenSecret)
-
-	xHttpClient := config.Client(oauth1.NoContext, token)
+func uploadImage(sign string) {
+	xHttpClient := getXHttpClient()
 
 	b := &bytes.Buffer{}
 	form := multipart.NewWriter(b)
 
 	fw, err := form.CreateFormFile("media", "file.png")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	opened, err := os.Open("out.png")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	_, err = io.Copy(fw, opened)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	form.Close()
@@ -89,34 +100,39 @@ func UploadImage(sign string) {
 	res, err := xHttpClient.Post("https://upload.twitter.com/1.1/media/upload.json?media_category=tweet_image", form.FormDataContentType(), bytes.NewReader(b.Bytes()))
 
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		log.Fatal(err)
 	}
 
 	defer res.Body.Close()
 
-	type MediaIdX struct {
-		MediaIdString string `json:"media_id_string"`
-	}
+	body, err := io.ReadAll(res.Body)
 
-	body, _ := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var response MediaIdX
 	if err := json.Unmarshal(body, &response); err != nil {
-		log.Fatalf("decode deepl response: %s", err)
+		log.Fatalf("decode media upload response: %s", err)
 	}
-
-	fmt.Println(string(body))
 
 	mediaIds := []string{response.MediaIdString}
 
-	Tweet("#"+sign+" #diario #horoscopo #pollo #horoscopollo", mediaIds)
+	sendToX("#"+sign+" #diario #horoscopo #pollo #horoscopollo", mediaIds)
 }
 
-func getXAuth() XAuth {
-	return XAuth{
+func getXHttpClient() *http.Client {
+	xAuth := XAuth{
 		xAPIKey:            config.GetEnvVar("X_API_KEY"),
 		xAPIKeySecret:      config.GetEnvVar("X_API_KEY_SECRET"),
 		xAccessToken:       config.GetEnvVar("X_ACCESS_TOKEN"),
 		xAccessTokenSecret: config.GetEnvVar("X_ACCESS_TOKEN_SECRET"),
 	}
+
+	config := oauth1.NewConfig(xAuth.xAPIKey, xAuth.xAPIKeySecret)
+	token := oauth1.NewToken(xAuth.xAccessToken, xAuth.xAccessTokenSecret)
+
+	xHttpClient := config.Client(oauth1.NoContext, token)
+
+	return xHttpClient
 }

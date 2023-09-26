@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"zodiak/internal/image"
+	"zodiak/internal/images"
 	"zodiak/internal/utils"
 
 	"github.com/go-co-op/gocron"
@@ -20,7 +20,6 @@ func init() {
 
 	if !exists {
 		if err := godotenv.Load(); err != nil {
-			log.Print("No .env file found")
 			log.Fatalf("No secrets nor .env file found")
 		}
 
@@ -37,7 +36,7 @@ var assets embed.FS
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 func main() {
-	image.Assets = assets
+	images.Assets = assets
 
 	port := os.Getenv("PORT")
 	if port == "" {

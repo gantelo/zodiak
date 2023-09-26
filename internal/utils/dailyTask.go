@@ -5,16 +5,18 @@ import (
 	"strings"
 	"time"
 	"zodiak/internal/config"
-	"zodiak/internal/image"
+	"zodiak/internal/x"
 )
 
 func DailyTask() {
-	log.Println("############ STARTED ############")
+	log.Println("# START DAILY TASK #")
 
-	for key := range zodiacSigns {
+	for key := range config.ZodiacSigns {
 		dailyTask(key)
-		time.Sleep(TIME_BETWEEN_POSTS)
+		time.Sleep(config.TIME_BETWEEN_POSTS)
 	}
+
+	log.Println("# END DAILY TASK #")
 }
 
 func SingleTask(sign string) {
@@ -24,24 +26,14 @@ func SingleTask(sign string) {
 func dailyTask(sign string) {
 	web := config.GetEnvVar("SCRAP_WEB")
 
-	log.Println("BEGIN SCRAP")
-	dailyHoroscope := Scrapper(web + sign + SUFFIX)
-	log.Println("END SCRAP: ", dailyHoroscope)
+	dailyHoroscope := Scrapper(web + sign + config.WEB_SUFFIX)
 
 	service := NewDeepLService()
 
-	log.Println("BEGIN TRANSLATE")
-	translation, err := service.TranslateToSpanish(dailyHoroscope)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("END TRANSLATE: ", translation)
+	translation := service.TranslateToSpanish(dailyHoroscope)
 
-	log.Println("BEGIN TWEET")
-	esSign := zodiacSigns[sign]
-
+	esSign := config.ZodiacSigns[sign]
 	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
 
-	image.GenerateBg(esSign, tweet)
-	log.Println("END TWEET: ", tweet)
+	x.Tweet(esSign, tweet)
 }

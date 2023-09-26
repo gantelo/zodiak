@@ -20,7 +20,8 @@ func NewDeepLService() *DeepLService {
 	}
 }
 
-func (s *DeepLService) TranslateToSpanish(text string) (string, error) {
+func (s *DeepLService) TranslateToSpanish(text string) string {
+	log.Println("Translation begins")
 	translation, err := s.client.Translate(
 		context.TODO(),
 		text,
@@ -33,8 +34,9 @@ func (s *DeepLService) TranslateToSpanish(text string) (string, error) {
 		if errors.As(err, &deeplError) {
 			log.Fatalf("deepl api error code %d: %s", deeplError.Code, deeplError.Error())
 		}
-		return "", err
+		log.Fatal(err)
 	}
 
-	return translation, nil
+	log.Println("Translation success")
+	return translation
 }

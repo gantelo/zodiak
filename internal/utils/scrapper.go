@@ -9,10 +9,13 @@ import (
 )
 
 func Scrapper(url string) string {
+	log.Println("Scrapper begins")
 	resp, err := http.Get(url)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer resp.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
@@ -28,9 +31,15 @@ func Scrapper(url string) string {
 	firstParagraph := divs.First().Find("p").First().Text()
 	secondParagraph := divs.First().Find("p").Last().Text()
 
+	if len(firstParagraph) == 0 {
+		log.Fatal("no first paragraph")
+	}
+
 	if len(secondParagraph) == 0 {
 		log.Fatal("no second paragraph")
 	}
+
+	log.Printf("Scrapper success with total length: %d\n", len(firstParagraph)+len(secondParagraph))
 
 	return firstParagraph + secondParagraph
 }

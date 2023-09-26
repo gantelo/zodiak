@@ -1,8 +1,8 @@
-package utils
+package config
 
 import "time"
 
-var zodiacSigns = map[string]string{
+var ZodiacSigns = map[string]string{
 	"aries":       "aries",
 	"taurus":      "tauro",
 	"gemini":      "geminis",
@@ -17,6 +17,13 @@ var zodiacSigns = map[string]string{
 	"pisces":      "piscis",
 }
 
-var SUFFIX = "/daily/"
+var WEB_SUFFIX = "/daily/"
 
 var TIME_BETWEEN_POSTS = 12 * time.Minute
+
+var FONT_PATH = "assets/SFProText-Bold.ttf"
+var IMG_OUTPUT_PATH = "out.png"
+
+func GetImgPath(sign string) string {
+	return "assets/" + sign + "pollo.png"
+}
