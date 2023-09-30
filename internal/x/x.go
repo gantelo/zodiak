@@ -25,34 +25,79 @@ type Media struct {
 	MediaIds []string `json:"media_ids"`
 }
 
-type TweetBody struct {
+type TweetBodyWithMedia struct {
 	Text  string `json:"text"`
 	Media Media  `json:"media"`
+}
+
+type TweetBody struct {
+	Text string `json:"text"`
 }
 
 type MediaIdX struct {
 	MediaIdString string `json:"media_id_string"`
 }
 
-func Tweet(sign string, tweet string) {
-	log.Println("Tweet begins")
+func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float64, title string, compatibility string) {
+	log.Println("Daily Compatibility Tweet begins")
 
-	images.GenerateImageFromTemplate(sign, tweet)
+	if len(title) == 0 || len(compatibility) == 0 {
+		log.Fatalf("title: %s, compatibility: %s", title, compatibility)
+	}
+
+	imgPath := "assets/compatibility.png"
+
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title, compatibility)
+
+	uploadImage(text)
+
+	log.Printf("Daily Compatibility Tweet success, length: %d\n", len(tweet))
+}
+
+func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
+	log.Println("Daily Horoscope Tweet begins")
+
+	imgPath := config.GetImgPath(sign)
+
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "")
 
 	uploadImage(sign)
 
-	log.Printf("Tweet success, length: %d\n", len(tweet))
+	log.Printf("Daily Horoscope Tweet success, length: %d\n", len(tweet))
 }
 
-func sendToX(tweetText string, mediaIds []string) {
-	xHttpClient := getXHttpClient()
+func Tweet(text string) {
+	log.Println("Tweet begins")
 
-	tweetBody := TweetBody{Text: tweetText, Media: Media{MediaIds: mediaIds}}
+	tweetText(text)
+
+	log.Println("Tweet success")
+}
+
+func tweetText(tweetText string) {
+	tweetBody := TweetBody{Text: tweetText}
 
 	jsonBytes, err := json.Marshal(tweetBody)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	tweetBytes(jsonBytes)
+}
+
+func tweetMedia(tweetText string, mediaIds []string) {
+	tweetBody := TweetBodyWithMedia{Text: tweetText, Media: Media{MediaIds: mediaIds}}
+
+	jsonBytes, err := json.Marshal(tweetBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tweetBytes(jsonBytes)
+}
+
+func tweetBytes(jsonBytes []byte) {
+	xHttpClient := getXHttpClient()
 
 	bodyReader := bytes.NewReader(jsonBytes)
 
@@ -74,7 +119,7 @@ func sendToX(tweetText string, mediaIds []string) {
 	log.Printf("Success tweet body:\n%v\n", string(body))
 }
 
-func uploadImage(sign string) {
+func uploadImage(text string) {
 	xHttpClient := getXHttpClient()
 
 	b := &bytes.Buffer{}
@@ -118,7 +163,7 @@ func uploadImage(sign string) {
 
 	mediaIds := []string{response.MediaIdString}
 
-	sendToX("#"+sign+" #diario #horoscopo #pollo #horoscopollo", mediaIds)
+	tweetMedia(text, mediaIds)
 }
 
 func getXHttpClient() *http.Client {

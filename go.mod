@@ -14,7 +14,7 @@ require (
 
 require (
 	github.com/dghubble/oauth1 v0.7.2
-	github.com/go-co-op/gocron v1.34.2
+	github.com/go-co-op/gocron v1.35.0
 )
 
 require (
