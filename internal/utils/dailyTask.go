@@ -39,6 +39,28 @@ func DailyCompatibility() {
 	log.Println("# END DAILY TASK #")
 }
 
+func DailyCompatibility2() {
+	log.Println("# START DAILY TASK #")
+
+	var randomSignIdx1 = rand.Intn(len(config.ZodiacSignsArray))
+	time.Sleep(2 * time.Second)
+	var randomSignIdx2 = rand.Intn(len(config.ZodiacSignsArray))
+	time.Sleep(2 * time.Second)
+	var randomCategoryIdx = rand.Intn(len(config.CompatibilityCategories))
+
+	var zodiac1 = config.ZodiacSignsArray[randomSignIdx1]
+	var zodiac2 = config.ZodiacSignsArray[randomSignIdx2]
+	var category = config.CompatibilityCategories[randomCategoryIdx]
+
+	dailyCompatibility(zodiac1, zodiac2, category)
+
+	time.Sleep(2 * time.Minute)
+
+	x.Tweet(config.CompatiblitiesExplanation)
+
+	log.Println("# END DAILY TASK #")
+}
+
 func SingleTask(sign string) {
 	dailyTask(sign)
 }
@@ -140,10 +162,6 @@ func dailyCompatibility(zodiac1 string, zodiac2 string, category string) {
 	imgHeader = toUpper(config.ZodiacSigns[zodiac1]) + " y " + toUpper(config.ZodiacSigns[zodiac2]) + ", " + imgHeader
 
 	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 220.0, imgHeader, categoryNow.Match)
-
-	time.Sleep(2 * time.Minute)
-
-	x.Tweet(config.CompatiblitiesExplanation)
 }
 
 func toUpper(zodiac string) string {

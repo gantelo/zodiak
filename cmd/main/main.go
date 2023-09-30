@@ -75,5 +75,6 @@ func main() {
 
 	s.Every(1).Day().At(config.START_DAILY_TASK_HOUR).Do(utils.DailyHoroscope)
 	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR).Do(utils.DailyCompatibility)
+	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR_2).Do(utils.DailyCompatibility2)
 	s.StartBlocking()
 }
