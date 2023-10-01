@@ -7,6 +7,7 @@ import (
 	"time"
 	"zodiak/internal/compatibilities"
 	"zodiak/internal/config"
+	stringutils "zodiak/internal/stringUtils"
 	"zodiak/internal/x"
 )
 
@@ -24,17 +25,8 @@ func DailyHoroscope() {
 func DailyCompatibility() {
 	log.Println("# START DAILY TASK #")
 
-	var randomSignIdx1 = rand.Intn(len(config.ZodiacSignsArray))
-	time.Sleep(2 * time.Second)
-	var randomSignIdx2 = rand.Intn(len(config.ZodiacSignsArray))
-	time.Sleep(2 * time.Second)
-	var randomCategoryIdx = rand.Intn(len(config.CompatibilityCategories))
-
-	var zodiac1 = config.ZodiacSignsArray[randomSignIdx1]
-	var zodiac2 = config.ZodiacSignsArray[randomSignIdx2]
-	var category = config.CompatibilityCategories[randomCategoryIdx]
-
-	dailyCompatibility(zodiac1, zodiac2, category)
+	zodiac1, zodiac2, category := getDailyRandomSignsOfTheDay()
+	dailyCompatibilityMapZodiacsToTweet(zodiac1, zodiac2, category)
 
 	log.Println("# END DAILY TASK #")
 }
@@ -42,21 +34,11 @@ func DailyCompatibility() {
 func DailyCompatibility2() {
 	log.Println("# START DAILY TASK #")
 
-	var randomSignIdx1 = rand.Intn(len(config.ZodiacSignsArray))
-	time.Sleep(2 * time.Second)
-	var randomSignIdx2 = rand.Intn(len(config.ZodiacSignsArray))
-	time.Sleep(2 * time.Second)
-	var randomCategoryIdx = rand.Intn(len(config.CompatibilityCategories))
-
-	var zodiac1 = config.ZodiacSignsArray[randomSignIdx1]
-	var zodiac2 = config.ZodiacSignsArray[randomSignIdx2]
-	var category = config.CompatibilityCategories[randomCategoryIdx]
-
-	dailyCompatibility(zodiac1, zodiac2, category)
+	zodiac1, zodiac2, category := getDailyRandomSignsOfTheDay()
+	dailyCompatibilityMapZodiacsToTweet(zodiac1, zodiac2, category)
 
 	time.Sleep(2 * time.Minute)
-
-	x.Tweet(config.CompatiblitiesExplanation)
+	x.Tweet(compatibilities.CompatiblitiesExplanation)
 
 	log.Println("# END DAILY TASK #")
 }
@@ -82,9 +64,23 @@ func dailyTask(sign string) {
 
 type Friendship compatibilities.Friendship
 
-func dailyCompatibility(zodiac1 string, zodiac2 string, category string) {
+func getDailyRandomSignsOfTheDay() (string, string, string) {
+	var randomSignIdx1 = rand.Intn(len(config.ZodiacSignsArray))
+	time.Sleep(2 * time.Second)
+	var randomSignIdx2 = rand.Intn(len(config.ZodiacSignsArray))
+	time.Sleep(2 * time.Second)
+	var randomCategoryIdx = rand.Intn(len(compatibilities.CompatibilityCategories))
 
-	compatibilityNow := config.Compatibilities[zodiac1+zodiac2]
+	var zodiac1 = config.ZodiacSignsArray[randomSignIdx1]
+	var zodiac2 = config.ZodiacSignsArray[randomSignIdx2]
+	var category = compatibilities.CompatibilityCategories[randomCategoryIdx]
+
+	return zodiac1, zodiac2, category
+}
+
+func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, category string) {
+
+	compatibilityNow := compatibilities.Compatibilities[zodiac1+zodiac2]
 
 	var categoryNow Friendship
 	var categoryDescription string = "como pareja"
@@ -158,11 +154,7 @@ func dailyCompatibility(zodiac1 string, zodiac2 string, category string) {
 
 	header := header1 + header2 + header3
 
-	imgHeader = toUpper(config.ZodiacSigns[zodiac1]) + " y " + toUpper(config.ZodiacSigns[zodiac2]) + ", " + imgHeader
+	imgHeader = stringutils.ToTitle(config.ZodiacSigns[zodiac1]) + " y " + stringutils.ToTitle(config.ZodiacSigns[zodiac2]) + ", " + imgHeader
 
 	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 220.0, imgHeader, categoryNow.Match)
-}
-
-func toUpper(zodiac string) string {
-	return strings.ToUpper(zodiac[:1]) + zodiac[1:]
 }

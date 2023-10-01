@@ -17,7 +17,13 @@ import (
 
 var Assets embed.FS
 
-func GenerateImageFromTemplate(imgPath string, horoscope string, maxWidthOffset float64, title string, compatibility string) {
+func GenerateImageFromTemplate(
+	imgPath string,
+	horoscope string,
+	maxWidthOffset float64,
+	title string,
+	compatibility string,
+) {
 	file, err := Assets.Open(imgPath)
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +44,7 @@ func GenerateImageFromTemplate(imgPath string, horoscope string, maxWidthOffset 
 
 	defer fontPathx.Close()
 
-	fontBody, fontTitle, faceSubTitle := loadFontFace(fontPathx, fontSizeByLength(len(horoscope)))
+	fonts := loadFontFace(fontPathx, fontSizeByLength(len(horoscope)))
 
 	if err != nil {
 		log.Fatal(err)
@@ -48,9 +54,7 @@ func GenerateImageFromTemplate(imgPath string, horoscope string, maxWidthOffset 
 		horoscope,
 		decodedImage,
 		maxWidthOffset,
-		fontBody,
-		fontTitle,
-		faceSubTitle,
+		fonts,
 		title,
 		compatibility,
 	)
@@ -59,7 +63,14 @@ func GenerateImageFromTemplate(imgPath string, horoscope string, maxWidthOffset 
 	log.Println("image saved on [", config.IMG_OUTPUT_PATH, "]")
 }
 
-func textOnImg(text string, bgImage image.Image, maxWidthOffset float64, fontBody font.Face, fontTitle font.Face, faceSubTitle font.Face, title string, compatibility string) image.Image {
+func textOnImg(
+	text string,
+	bgImage image.Image,
+	maxWidthOffset float64,
+	fonts Fonts,
+	title string,
+	compatibility string,
+) image.Image {
 	imgWidth := bgImage.Bounds().Dx()
 	imgHeight := bgImage.Bounds().Dy()
 
@@ -71,17 +82,17 @@ func textOnImg(text string, bgImage image.Image, maxWidthOffset float64, fontBod
 	maxWidth := float64(imgWidth) - maxWidthOffset //220.0 for compat
 
 	if len(title) > 0 && len(compatibility) > 0 {
-		dc.SetFontFace(fontTitle)
+		dc.SetFontFace(fonts.Title)
 		dc.SetColor(color.White)
 
 		dc.DrawStringWrapped(title, x, 120, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
 
-		dc.SetFontFace(faceSubTitle)
+		dc.SetFontFace(fonts.Subtitle)
 		dc.SetColor(calculateTitleColor(compatibility))
 		dc.DrawStringWrapped("Compatibilidad: "+compatibility, x, 180, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
 	}
 
-	dc.SetFontFace(fontBody)
+	dc.SetFontFace(fonts.Body)
 	dc.SetColor(color.White)
 	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1, gg.AlignCenter)
 
@@ -94,7 +105,13 @@ func save(img image.Image, path string) {
 	}
 }
 
-func loadFontFace(file fs.File, size float64) (font.Face, font.Face, font.Face) {
+type Fonts struct {
+	Body     font.Face
+	Title    font.Face
+	Subtitle font.Face
+}
+
+func loadFontFace(file fs.File, size float64) Fonts {
 	fontBytes, err := io.ReadAll(file)
 	if err != nil {
 		log.Fatal(err)
@@ -117,7 +134,7 @@ func loadFontFace(file fs.File, size float64) (font.Face, font.Face, font.Face) 
 		Size: 37, // change only for compats
 	})
 
-	return faceBody, faceTitle, faceSubTitle
+	return Fonts{faceBody, faceTitle, faceSubTitle}
 }
 
 func fontSizeByLength(len int) float64 {
