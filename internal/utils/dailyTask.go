@@ -76,9 +76,8 @@ func dailyTask(sign string) {
 
 	esSign := config.ZodiacSigns[sign]
 	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
-	textForImg := "#" + esSign + " #diario #horoscopo #pollo #horoscopollo"
 
-	x.TweetDailyHoroscope(textForImg, tweet, 60.0)
+	x.TweetDailyHoroscope(esSign, tweet, 60.0)
 }
 
 type Friendship compatibilities.Friendship

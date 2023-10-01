@@ -60,8 +60,9 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 	imgPath := config.GetImgPath(sign)
 
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "")
+	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
 
-	uploadImage(sign)
+	uploadImage(textForImg)
 
 	log.Printf("Daily Horoscope Tweet success, length: %d\n", len(tweet))
 }
