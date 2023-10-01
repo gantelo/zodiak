@@ -9,7 +9,7 @@ import (
 )
 
 func Scrapper(url string) string {
-	log.Println("Scrapper begins")
+	log.Printf("Scrapper begins for: %s\n", url)
 	resp, err := http.Get(url)
 
 	if err != nil {

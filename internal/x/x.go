@@ -3,7 +3,6 @@ package x
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -63,8 +62,7 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "")
 	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
 
-	fmt.Println(textForImg)
-	// uploadImage(textForImg)
+	uploadImage(textForImg)
 
 	log.Printf("Daily Horoscope Tweet success, length: %d\n", len(tweet))
 }
