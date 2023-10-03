@@ -7,8 +7,8 @@ import (
 	"io"
 	"io/fs"
 	"log"
-	"strconv"
 	"zodiak/internal/config"
+	"zodiak/internal/ctypes"
 
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
@@ -22,7 +22,9 @@ func GenerateImageFromTemplate(
 	horoscope string,
 	maxWidthOffset float64,
 	title string,
-	compatibility string,
+	subtitle string,
+	subtitleColor color.Color,
+	imgType ctypes.ImgGen,
 ) {
 	file, err := Assets.Open(imgPath)
 	if err != nil {
@@ -44,7 +46,7 @@ func GenerateImageFromTemplate(
 
 	defer fontPathx.Close()
 
-	fonts := loadFontFace(fontPathx, fontSizeByLength(len(horoscope)))
+	fonts := loadFontFace(fontPathx, fontSizeByLength(len(horoscope), imgType), imgType)
 
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +58,9 @@ func GenerateImageFromTemplate(
 		maxWidthOffset,
 		fonts,
 		title,
-		compatibility,
+		subtitle,
+		subtitleColor,
+		imgType,
 	)
 
 	save(img, config.IMG_OUTPUT_PATH)
@@ -69,7 +73,9 @@ func textOnImg(
 	maxWidthOffset float64,
 	fonts Fonts,
 	title string,
-	compatibility string,
+	subtitle string,
+	subtitleColor color.Color,
+	imgType ctypes.ImgGen,
 ) image.Image {
 	imgWidth := bgImage.Bounds().Dx()
 	imgHeight := bgImage.Bounds().Dy()
@@ -77,23 +83,26 @@ func textOnImg(
 	dc := gg.NewContext(imgWidth, imgHeight)
 	dc.DrawImage(bgImage, 0, 0)
 
-	x := float64(imgWidth / 2)
-	y := float64(imgHeight / 2)
-	maxWidth := float64(imgWidth) - maxWidthOffset //220.0 for compat
+	yOffsets := calculateOffsets(imgHeight, imgType)
 
-	if len(title) > 0 && len(compatibility) > 0 {
+	x := float64(imgWidth / 2)
+	y := yOffsets.Body
+	maxWidth := float64(imgWidth) - maxWidthOffset
+
+	if len(title) > 0 {
 		dc.SetFontFace(fonts.Title)
 		dc.SetColor(color.White)
+		dc.DrawStringWrapped(title, x, yOffsets.Title, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
+	}
 
-		dc.DrawStringWrapped(title, x, 120, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
-
+	if len(subtitle) > 0 {
 		dc.SetFontFace(fonts.Subtitle)
-		dc.SetColor(calculateTitleColor(compatibility))
-		dc.DrawStringWrapped("Compatibilidad: "+compatibility, x, 180, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
+		dc.SetColor(subtitleColor)
+		dc.DrawStringWrapped(subtitle, x, yOffsets.Subtitle, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
 	}
 
 	dc.SetFontFace(fonts.Body)
-	dc.SetColor(color.White)
+	dc.SetColor(getColorByType(imgType))
 	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1, gg.AlignCenter)
 
 	return dc.Image()
@@ -111,7 +120,7 @@ type Fonts struct {
 	Subtitle font.Face
 }
 
-func loadFontFace(file fs.File, size float64) Fonts {
+func loadFontFace(file fs.File, bodySize float64, imgType ctypes.ImgGen) Fonts {
 	fontBytes, err := io.ReadAll(file)
 	if err != nil {
 		log.Fatal(err)
@@ -122,62 +131,92 @@ func loadFontFace(file fs.File, size float64) Fonts {
 		log.Fatal(err)
 	}
 
+	var title float64
+	var subtitle float64
+
+	switch imgType {
+	case ctypes.Horoscope:
+		title = config.HOROSCOPE_SUBTITLE_SIZE
+		subtitle = config.HOROSCOPE_SUBTITLE_SIZE
+	case ctypes.Compatibility:
+		title = config.COMPAT_TITLE_SIZE
+		subtitle = config.COMPAT_SUBTITLE_SIZE
+	}
+
 	faceBody := truetype.NewFace(font, &truetype.Options{
-		Size: size, // change only for compats
+		Size: bodySize, // change only for compats
 	})
 
 	faceTitle := truetype.NewFace(font, &truetype.Options{
-		Size: 45, // change only for compats
+		Size: title, // change only for compats
 	})
 
 	faceSubTitle := truetype.NewFace(font, &truetype.Options{
-		Size: 37, // change only for compats
+		Size: subtitle, // change only for compats
 	})
 
 	return Fonts{faceBody, faceTitle, faceSubTitle}
 }
 
-func fontSizeByLength(len int) float64 {
+func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
+	var maxFs float64
+	var medFs float64
+	var minFs float64
+
+	switch imgType {
+	case ctypes.Horoscope:
+		maxFs = config.HOROSCOPE_MAX_FONT_SIZE
+		medFs = config.HOROSCOPE_MED_FONT_SIZE
+		minFs = config.HOROSCOPE_MIN_FONT_SIZE
+	case ctypes.Compatibility:
+		maxFs = config.COMPAT_MAX_FONT_SIZE
+		medFs = config.COMPAT_MED_FONT_SIZE
+		minFs = config.COMPAT_MIN_FONT_SIZE
+	}
+
 	if len <= 650 {
-		return 45
+		return maxFs
 	}
 
 	if len <= 800 {
-		return 40
+		return medFs
 	}
 
-	return 33.5
+	return minFs
 }
 
-func calculateTitleColor(compatibility string) color.Color {
-	comp := compatibility[:len(compatibility)-1]
+type TextOffsets struct {
+	Title    float64
+	Body     float64
+	Subtitle float64
+}
 
-	// Parse the remaining string to an int
-	n, err := strconv.Atoi(comp)
-	if err != nil {
-		log.Fatal(err)
+func calculateOffsets(imgHeight int, imgType ctypes.ImgGen) TextOffsets {
+	var title float64
+	var body float64
+	var subtitle float64
+
+	switch imgType {
+	case ctypes.Horoscope:
+		title = 120
+		body = float64(imgHeight/2) - 60
+		subtitle = float64(imgHeight - 155)
+	case ctypes.Compatibility:
+		title = 120
+		body = float64(imgHeight / 2)
+		subtitle = 180
 	}
 
-	if n <= 10 {
-		return color.RGBA{R: 255, G: 32, B: 71, A: 185}
+	return TextOffsets{title, body, subtitle}
+}
+
+func getColorByType(imgType ctypes.ImgGen) color.Color {
+	switch imgType {
+	case ctypes.Horoscope:
+		return color.RGBA{R: 155, G: 75, B: 51, A: 255}
+	case ctypes.Compatibility:
+		return color.RGBA{R: 202, G: 181, B: 149, A: 255}
 	}
-	if n <= 20 {
-		return color.RGBA{R: 255, G: 69, B: 71, A: 185}
-	}
-	if n <= 35 {
-		return color.RGBA{R: 255, G: 131, B: 71, A: 185}
-	}
-	if n < 45 {
-		return color.RGBA{R: 255, G: 171, B: 0, A: 185} //rgb(255,105,0)
-	}
-	if n < 60 {
-		return color.RGBA{R: 105, G: 218, B: 46, A: 185} //rgb(247,183,25)
-	}
-	if n <= 72 {
-		return color.RGBA{R: 64, G: 214, B: 3, A: 185} //rgb(162,251,6)
-	}
-	if n <= 100 {
-		return color.RGBA{R: 3, G: 214, B: 31, A: 185} //rgb(42,202,42)
-	}
-	return color.RGBA{R: 0, G: 0, B: 0, A: 0}
+
+	return color.RGBA{R: 202, G: 181, B: 149, A: 255}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -157,17 +156,6 @@ func (c *Client) translate(ctx context.Context, text string, targetLang Language
 	}
 
 	return response.Translations[0].Text, nil
-}
-
-func errorFromResp(r *http.Response) error {
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		return fmt.Errorf("read response body: %w", err)
-	}
-	return Error{
-		Code: r.StatusCode,
-		Body: b,
-	}
 }
 
 func (err Error) Error() string {

@@ -1,4 +1,4 @@
-package utils
+package daily
 
 import (
 	"log"
@@ -7,11 +7,13 @@ import (
 	"time"
 	"zodiak/internal/compatibilities"
 	"zodiak/internal/config"
+	"zodiak/internal/deepl"
+	"zodiak/internal/scrap"
 	stringutils "zodiak/internal/stringUtils"
 	"zodiak/internal/x"
 )
 
-func DailyHoroscope() {
+func Horoscope() {
 	log.Println("# START DAILY TASK #")
 
 	for key := range config.ZodiacSigns {
@@ -22,7 +24,7 @@ func DailyHoroscope() {
 	log.Println("# END DAILY TASK #")
 }
 
-func DailyCompatibility() {
+func Compatibility() {
 	log.Println("# START DAILY TASK #")
 
 	zodiac1, zodiac2, category := getDailyRandomSignsOfTheDay()
@@ -31,7 +33,7 @@ func DailyCompatibility() {
 	log.Println("# END DAILY TASK #")
 }
 
-func DailyCompatibility2() {
+func CompatibilityAndExplanation() {
 	log.Println("# START DAILY TASK #")
 
 	zodiac1, zodiac2, category := getDailyRandomSignsOfTheDay()
@@ -50,16 +52,16 @@ func SingleTask(sign string) {
 func dailyTask(sign string) {
 	web := config.GetEnvVar("SCRAP_WEB")
 
-	dailyHoroscope := Scrapper(web + sign + config.WEB_SUFFIX)
+	dailyHoroscope := scrap.UrlToDailyHoroscope(web + sign + config.WEB_SUFFIX)
 
-	service := NewDeepLService()
+	service := deepl.NewDeepLService()
 
 	translation := service.TranslateToSpanish(dailyHoroscope)
 
 	esSign := config.ZodiacSigns[sign]
 	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
 
-	x.TweetDailyHoroscope(esSign, tweet, 60.0)
+	x.TweetDailyHoroscope(esSign, tweet, 320.0)
 }
 
 type Friendship compatibilities.Friendship
@@ -156,5 +158,5 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 
 	imgHeader = stringutils.ToTitle(config.ZodiacSigns[zodiac1]) + " y " + stringutils.ToTitle(config.ZodiacSigns[zodiac2]) + ", " + imgHeader
 
-	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 220.0, imgHeader, categoryNow.Match)
+	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 240.0, imgHeader, categoryNow.Match)
 }

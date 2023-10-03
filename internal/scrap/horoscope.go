@@ -1,4 +1,4 @@
-package utils
+package scrap
 
 import (
 	"log"
@@ -8,8 +8,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func Scrapper(url string) string {
-	log.Printf("Scrapper begins for: %s\n", url)
+func UrlToDailyHoroscope(url string) string {
+	log.Printf("HoroScrapper begins for: %s\n", url)
 	resp, err := http.Get(url)
 
 	if err != nil {

@@ -3,12 +3,15 @@ package x
 import (
 	"bytes"
 	"encoding/json"
+	"image/color"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
 	"zodiak/internal/config"
+	"zodiak/internal/ctypes"
 	"zodiak/internal/images"
 
 	"github.com/dghubble/oauth1"
@@ -47,7 +50,7 @@ func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float6
 
 	imgPath := "assets/compatibility.png"
 
-	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title, compatibility)
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title, "Compatibilidad: "+compatibility, calculateCopatibilityColor(compatibility), ctypes.Compatibility)
 
 	uploadImage(text)
 
@@ -59,7 +62,7 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 
 	imgPath := config.GetImgPath(sign)
 
-	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "")
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "11 de septiembre", config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
 	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
 
 	uploadImage(textForImg)
@@ -181,4 +184,37 @@ func getXHttpClient() *http.Client {
 	xHttpClient := config.Client(oauth1.NoContext, token)
 
 	return xHttpClient
+}
+
+func calculateCopatibilityColor(compatibility string) color.Color {
+	comp := compatibility[:len(compatibility)-1]
+
+	// Parse the remaining string to an int
+	n, err := strconv.Atoi(comp)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if n <= 10 {
+		return color.RGBA{R: 255, G: 32, B: 71, A: 185}
+	}
+	if n <= 20 {
+		return color.RGBA{R: 255, G: 69, B: 71, A: 185}
+	}
+	if n <= 35 {
+		return color.RGBA{R: 255, G: 131, B: 71, A: 185}
+	}
+	if n < 45 {
+		return color.RGBA{R: 255, G: 171, B: 0, A: 185} //rgb(255,105,0)
+	}
+	if n < 60 {
+		return color.RGBA{R: 105, G: 218, B: 46, A: 185} //rgb(247,183,25)
+	}
+	if n <= 72 {
+		return color.RGBA{R: 64, G: 214, B: 3, A: 185} //rgb(162,251,6)
+	}
+	if n <= 100 {
+		return color.RGBA{R: 3, G: 214, B: 31, A: 185} //rgb(42,202,42)
+	}
+	return color.RGBA{R: 0, G: 0, B: 0, A: 0}
 }

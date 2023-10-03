@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 	"zodiak/internal/config"
+	"zodiak/internal/daily"
 	"zodiak/internal/images"
-	"zodiak/internal/utils"
 
 	"github.com/go-co-op/gocron"
 	"github.com/joho/godotenv"
@@ -60,7 +60,7 @@ func main() {
 		pass := os.Getenv("API_PASS")
 
 		if pass == reqPass {
-			utils.SingleTask(sign)
+			daily.SingleTask(sign)
 			io.WriteString(w, "Added for "+sign+"!\n")
 		} else {
 			io.WriteString(w, "xd, no!!, "+r.RemoteAddr)
@@ -73,8 +73,8 @@ func main() {
 	log.Println("Starting cron job")
 	s := gocron.NewScheduler(time.UTC)
 
-	s.Every(1).Day().At(config.START_DAILY_TASK_HOUR).Do(utils.DailyHoroscope)
-	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR).Do(utils.DailyCompatibility)
-	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR_2).Do(utils.DailyCompatibility2)
+	s.Every(1).Day().At(config.START_DAILY_TASK_HOUR).Do(daily.Horoscope)
+	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR).Do(daily.Compatibility)
+	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR_2).Do(daily.CompatibilityAndExplanation)
 	s.StartBlocking()
 }
