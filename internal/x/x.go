@@ -10,11 +10,13 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 	"zodiak/internal/config"
 	"zodiak/internal/ctypes"
 	"zodiak/internal/images"
 
 	"github.com/dghubble/oauth1"
+	"github.com/goodsign/monday"
 )
 
 type XAuth struct {
@@ -62,7 +64,9 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 
 	imgPath := config.GetImgPath(sign)
 
-	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "11 de septiembre", config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
+	currentDay := getCurrentDay()
+
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", currentDay, config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
 	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
 
 	uploadImage(textForImg)
@@ -217,4 +221,10 @@ func calculateCopatibilityColor(compatibility string) color.Color {
 		return color.RGBA{R: 3, G: 214, B: 31, A: 185} //rgb(42,202,42)
 	}
 	return color.RGBA{R: 0, G: 0, B: 0, A: 0}
+}
+
+func getCurrentDay() string {
+	currentDay := monday.Format(time.Now(), "2 de January", monday.LocaleEsES)
+
+	return currentDay
 }
