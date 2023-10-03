@@ -199,7 +199,7 @@ func calculateOffsets(imgHeight int, imgType ctypes.ImgGen) TextOffsets {
 	switch imgType {
 	case ctypes.Horoscope:
 		title = 120
-		body = float64(imgHeight/2) - 60
+		body = float64(imgHeight / 2)
 		subtitle = float64(imgHeight - 155)
 	case ctypes.Compatibility:
 		title = 120
