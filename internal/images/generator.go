@@ -22,6 +22,7 @@ func GenerateImageFromTemplate(
 	horoscope string,
 	maxWidthOffset float64,
 	title string,
+	title2 string,
 	subtitle string,
 	subtitleColor color.Color,
 	imgType ctypes.ImgGen,
@@ -58,6 +59,7 @@ func GenerateImageFromTemplate(
 		maxWidthOffset,
 		fonts,
 		title,
+		title2,
 		subtitle,
 		subtitleColor,
 		imgType,
@@ -73,6 +75,7 @@ func textOnImg(
 	maxWidthOffset float64,
 	fonts Fonts,
 	title string,
+	title2 string,
 	subtitle string,
 	subtitleColor color.Color,
 	imgType ctypes.ImgGen,
@@ -91,8 +94,14 @@ func textOnImg(
 
 	if len(title) > 0 {
 		dc.SetFontFace(fonts.Title)
-		dc.SetColor(color.White)
+		dc.SetColor(getColorByType(imgType))
 		dc.DrawStringWrapped(title, x, yOffsets.Title, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
+	}
+
+	if len(title2) > 0 {
+		dc.SetFontFace(fonts.Title2)
+		dc.SetColor(getColorByType(imgType))
+		dc.DrawStringWrapped(title2, x, yOffsets.Title2, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
 	}
 
 	if len(subtitle) > 0 {
@@ -117,6 +126,7 @@ func save(img image.Image, path string) {
 type Fonts struct {
 	Body     font.Face
 	Title    font.Face
+	Title2   font.Face
 	Subtitle font.Face
 }
 
@@ -132,14 +142,17 @@ func loadFontFace(file fs.File, bodySize float64, imgType ctypes.ImgGen) Fonts {
 	}
 
 	var title float64
+	var title2 float64
 	var subtitle float64
 
 	switch imgType {
 	case ctypes.Horoscope:
 		title = config.HOROSCOPE_SUBTITLE_SIZE
+		title2 = config.HOROSCOPE_SUBTITLE_SIZE
 		subtitle = config.HOROSCOPE_SUBTITLE_SIZE
 	case ctypes.Compatibility:
 		title = config.COMPAT_TITLE_SIZE
+		title2 = config.COMPAT_TITLE2_SIZE
 		subtitle = config.COMPAT_SUBTITLE_SIZE
 	}
 
@@ -155,7 +168,11 @@ func loadFontFace(file fs.File, bodySize float64, imgType ctypes.ImgGen) Fonts {
 		Size: subtitle, // change only for compats
 	})
 
-	return Fonts{faceBody, faceTitle, faceSubTitle}
+	faceTitle2 := truetype.NewFace(font, &truetype.Options{
+		Size: title2, // change only for compats
+	})
+
+	return Fonts{faceBody, faceTitle, faceTitle2, faceSubTitle}
 }
 
 func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
@@ -178,7 +195,7 @@ func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
 		return maxFs
 	}
 
-	if len <= 800 {
+	if len <= 900 {
 		return medFs
 	}
 
@@ -187,35 +204,39 @@ func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
 
 type TextOffsets struct {
 	Title    float64
+	Title2   float64
 	Body     float64
 	Subtitle float64
 }
 
 func calculateOffsets(imgHeight int, imgType ctypes.ImgGen) TextOffsets {
 	var title float64
+	var title2 float64
 	var body float64
 	var subtitle float64
 
 	switch imgType {
 	case ctypes.Horoscope:
 		title = 120
+		title2 = 120
 		body = float64(imgHeight / 2)
 		subtitle = float64(imgHeight - 155)
 	case ctypes.Compatibility:
-		title = 120
-		body = float64(imgHeight / 2)
-		subtitle = 180
+		title = 150
+		title2 = 200
+		body = float64(imgHeight/2) + 70
+		subtitle = 255
 	}
 
-	return TextOffsets{title, body, subtitle}
+	return TextOffsets{title, title2, body, subtitle}
 }
 
 func getColorByType(imgType ctypes.ImgGen) color.Color {
 	switch imgType {
 	case ctypes.Horoscope:
-		return color.RGBA{R: 155, G: 75, B: 51, A: 255}
+		return config.HOROSCOPE_TEXT_COLOR
 	case ctypes.Compatibility:
-		return color.RGBA{R: 202, G: 181, B: 149, A: 255}
+		return config.COMPAT_TEXT_COLOR
 	}
 
 	return color.RGBA{R: 202, G: 181, B: 149, A: 255}

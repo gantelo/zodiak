@@ -43,16 +43,16 @@ type MediaIdX struct {
 	MediaIdString string `json:"media_id_string"`
 }
 
-func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float64, title string, compatibility string) {
+func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float64, title1 string, title2 string, compatibility string) {
 	log.Println("Daily Compatibility Tweet begins")
 
-	if len(title) == 0 || len(compatibility) == 0 {
-		log.Fatalf("title: %s, compatibility: %s", title, compatibility)
+	if len(title1) == 0 || len(compatibility) == 0 || len(title2) == 0 {
+		log.Fatalf("title: %s, compatibility: %s", title1, compatibility)
 	}
 
 	imgPath := "assets/compatibility.png"
 
-	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title, "Compatibilidad: "+compatibility, calculateCopatibilityColor(compatibility), ctypes.Compatibility)
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title1, title2, "Compatibilidad: "+compatibility, calculateCopatibilityColor(compatibility), ctypes.Compatibility)
 
 	uploadImage(text)
 
@@ -66,7 +66,7 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 
 	currentDay := getCurrentDay()
 
-	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", currentDay, config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "", currentDay, config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
 	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
 
 	uploadImage(textForImg)

@@ -112,7 +112,7 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 			Summary: compatibilityNow.Love.SexualIntimacy.Text,
 			Traits:  compatibilityNow.Love.Traits,
 		}
-		imgHeader = "en la cama"
+		imgHeader = "y lo sexual"
 	case "Trust":
 		categoryNow = Friendship{
 			Match:   compatibilityNow.Love.Trust.Match,
@@ -126,7 +126,7 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 			Summary: compatibilityNow.Love.Communication.Text,
 			Traits:  compatibilityNow.Love.Traits,
 		}
-		imgHeader = "comunicándose"
+		imgHeader = "y la comunicación"
 	case "Emotions":
 		categoryNow = Friendship{
 			Match:   compatibilityNow.Love.Emotions.Match,
@@ -140,14 +140,14 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 			Summary: compatibilityNow.Love.Values.Text,
 			Traits:  compatibilityNow.Love.Traits,
 		}
-		imgHeader = "y sus valores"
+		imgHeader = "y los valores"
 	case "SharedActivities":
 		categoryNow = Friendship{
 			Match:   compatibilityNow.Love.SharedActivities.Match,
 			Summary: compatibilityNow.Love.SharedActivities.Text,
 			Traits:  compatibilityNow.Love.Traits,
 		}
-		imgHeader = "y sus pasatiempos"
+		imgHeader = "y los pasatiempos"
 	}
 
 	header1 := compatibilityNow.Name + " " + categoryDescription + " 👀\n\n"
@@ -156,7 +156,9 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 
 	header := header1 + header2 + header3
 
-	imgHeader = stringutils.ToTitle(config.ZodiacSigns[zodiac1]) + " y " + stringutils.ToTitle(config.ZodiacSigns[zodiac2]) + ", " + imgHeader
+	names := stringutils.ToTitle(config.ZodiacSigns[zodiac1]) + " y " + stringutils.ToTitle(config.ZodiacSigns[zodiac2])
 
-	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 240.0, imgHeader, categoryNow.Match)
+	subtitle := imgHeader
+
+	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 290.0, names, subtitle, categoryNow.Match)
 }
