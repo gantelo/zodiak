@@ -35,11 +35,27 @@ var ZodiacSigns = map[string]string{
 	"pisces":      "piscis",
 }
 
+var ZodiacSignsTags = map[string]string{
+	"aries":       "#aries ♈",
+	"taurus":      "#tauro ♉",
+	"gemini":      "#geminis ♊",
+	"cancer":      "#cancer ♋",
+	"leo":         "#leo ♌",
+	"virgo":       "#virgo ♍",
+	"libra":       "#libra ♎",
+	"scorpio":     "#escorpio ♐",
+	"sagittarius": "#sagitario ♑",
+	"capricorn":   "#capricornio ♒",
+	"aquarius":    "#acuario ♓",
+	"pisces":      "#piscis ♏",
+}
+
 const WEB_SUFFIX = "/daily/"
 
 const START_DAILY_TASK_HOUR = "10:00"
 const START_DAILY_COMPATIBILITY_TASK_HOUR = "18:00"
 const START_DAILY_COMPATIBILITY_TASK_HOUR_2 = "21:00"
+const START_DAILY_MOON_PHASE_TASK_HOUR = "23:50"
 const TIME_BETWEEN_POSTS = 25 * time.Minute
 
 const FONT_PATH = "assets/Timeburner.ttf"
@@ -64,3 +80,7 @@ const COMPAT_MIN_FONT_SIZE = 32
 const COMPAT_SUBTITLE_SIZE = 34
 const COMPAT_TITLE_SIZE = 58
 const COMPAT_TITLE2_SIZE = 42
+
+const MOON_MAX_FONT_SIZE = 21
+const MOON_MED_FONT_SIZE = 15
+const MOON_MIN_FONT_SIZE = 14

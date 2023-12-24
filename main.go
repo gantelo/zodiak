@@ -76,5 +76,6 @@ func main() {
 	s.Every(1).Day().At(config.START_DAILY_TASK_HOUR).Do(daily.Horoscope)
 	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR).Do(daily.Compatibility)
 	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR_2).Do(daily.CompatibilityAndExplanation)
+	s.Every(1).Day().At(config.START_DAILY_MOON_PHASE_TASK_HOUR).Do(daily.DailyMoonPhase)
 	s.StartBlocking()
 }

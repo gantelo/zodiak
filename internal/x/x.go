@@ -43,6 +43,18 @@ type MediaIdX struct {
 	MediaIdString string `json:"media_id_string"`
 }
 
+func TweetDailyMoonPhaseImg(text string, tweet string, maxWidthOffset float64) {
+	log.Println("Daily MoonPhase Tweet begins")
+
+	imgPath := "assets/moon.png"
+
+	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "", "", config.HOROSCOPE_TEXT_COLOR, ctypes.Moon)
+
+	uploadImage(text)
+
+	log.Printf("Daily MoonPhase Tweet success, length: %d\n", len(tweet))
+}
+
 func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float64, title1 string, title2 string, compatibility string) {
 	log.Println("Daily Compatibility Tweet begins")
 

@@ -49,6 +49,22 @@ func SingleTask(sign string) {
 	dailyTask(sign)
 }
 
+func DailyMoonPhase() {
+	log.Println("# START MOON TASK #")
+
+	web := config.GetEnvVar("MOON_SCRAP_WEB")
+	header, body := scrap.UrlTomorrowMoon(web)
+
+	service := deepl.NewDeepLService()
+	translation := service.TranslateToSpanish(body)
+
+	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
+
+	x.TweetDailyMoonPhaseImg(header, tweet, 120.0)
+
+	log.Println("# END MOON TASK #")
+}
+
 func dailyTask(sign string) {
 	web := config.GetEnvVar("SCRAP_WEB")
 

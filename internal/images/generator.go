@@ -189,6 +189,10 @@ func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
 		maxFs = config.COMPAT_MAX_FONT_SIZE
 		medFs = config.COMPAT_MED_FONT_SIZE
 		minFs = config.COMPAT_MIN_FONT_SIZE
+	case ctypes.Moon:
+		maxFs = config.MOON_MAX_FONT_SIZE
+		medFs = config.MOON_MED_FONT_SIZE
+		minFs = config.MOON_MIN_FONT_SIZE
 	}
 
 	if len <= 650 {
@@ -226,6 +230,11 @@ func calculateOffsets(imgHeight int, imgType ctypes.ImgGen) TextOffsets {
 		title2 = 200
 		body = float64(imgHeight/2) + 70
 		subtitle = 255
+	case ctypes.Moon:
+		title = 120
+		title2 = 120
+		body = float64(imgHeight / 2)
+		subtitle = float64(imgHeight - 155)
 	}
 
 	return TextOffsets{title, title2, body, subtitle}
