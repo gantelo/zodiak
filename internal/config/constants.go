@@ -56,7 +56,8 @@ const START_DAILY_TASK_HOUR = "10:00"
 const START_DAILY_COMPATIBILITY_TASK_HOUR = "18:00"
 const START_DAILY_COMPATIBILITY_TASK_HOUR_2 = "21:00"
 const START_DAILY_MOON_PHASE_TASK_HOUR = "23:50"
-const TIME_BETWEEN_POSTS = 25 * time.Minute
+const TIME_BETWEEN_POSTS = 5 * time.Minute
+const TIME_BETWEEN_SCRAP = 15 * time.Second
 
 const FONT_PATH = "assets/Timeburner.ttf"
 const IMG_OUTPUT_PATH = "out.png"

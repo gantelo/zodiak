@@ -50,7 +50,9 @@ func TweetDailyMoonPhaseImg(text string, tweet string, maxWidthOffset float64) {
 
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "", "", config.HOROSCOPE_TEXT_COLOR, ctypes.Moon)
 
-	uploadImage(text)
+	mediaId := uploadImage()
+
+	tweetMedia(text, []string{mediaId})
 
 	log.Printf("Daily MoonPhase Tweet success, length: %d\n", len(tweet))
 }
@@ -66,12 +68,14 @@ func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float6
 
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, title1, title2, "Compatibilidad: "+compatibility, calculateCopatibilityColor(compatibility), ctypes.Compatibility)
 
-	uploadImage(text)
+	mediaId := uploadImage()
+
+	tweetMedia(text, []string{mediaId})
 
 	log.Printf("Daily Compatibility Tweet success, length: %d\n", len(tweet))
 }
 
-func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
+func GetDailyHoroscopeForSign(sign string, tweet string, maxWidthOffset float64) string {
 	log.Println("Daily Horoscope Tweet begins")
 
 	imgPath := config.GetImgPath(sign)
@@ -79,11 +83,10 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 	currentDay := getCurrentDay()
 
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "", currentDay, config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
-	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
-
-	uploadImage(textForImg)
 
 	log.Printf("Daily Horoscope Tweet success, length: %d\n", len(tweet))
+
+	return uploadImage()
 }
 
 func Tweet(text string) {
@@ -139,7 +142,11 @@ func tweetBytes(jsonBytes []byte) {
 	log.Printf("Success tweet body:\n%v\n", string(body))
 }
 
-func uploadImage(text string) {
+func TweetDailyHoroscope(text string, mediaIds []string) {
+	tweetMedia(text, mediaIds)
+}
+
+func uploadImage() string {
 	xHttpClient := getXHttpClient()
 
 	b := &bytes.Buffer{}
@@ -181,9 +188,7 @@ func uploadImage(text string) {
 		log.Fatalf("decode media upload response: %s", err)
 	}
 
-	mediaIds := []string{response.MediaIdString}
-
-	tweetMedia(text, mediaIds)
+	return response.MediaIdString
 }
 
 func getXHttpClient() *http.Client {

@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -23,9 +22,7 @@ func init() {
 		if err := godotenv.Load(); err != nil {
 			log.Fatalf("No secrets nor .env file found")
 		}
-
 	}
-
 }
 
 //go:embed templates/*
@@ -51,20 +48,6 @@ func main() {
 		}
 
 		t.ExecuteTemplate(w, "index.html.tmpl", data)
-	})
-
-	http.HandleFunc("/xd", func(w http.ResponseWriter, r *http.Request) {
-		sign := r.FormValue("sign")
-		reqPass := r.FormValue("pass")
-
-		pass := os.Getenv("API_PASS")
-
-		if pass == reqPass {
-			daily.SingleTask(sign)
-			io.WriteString(w, "Added for "+sign+"!\n")
-		} else {
-			io.WriteString(w, "xd, no!!, "+r.RemoteAddr)
-		}
 	})
 
 	log.Println("listening on", port)

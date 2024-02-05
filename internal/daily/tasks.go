@@ -16,10 +16,20 @@ import (
 func Horoscope() {
 	log.Println("# START DAILY TASK #")
 
+	keys := make([]string, 0, len(config.ZodiacSigns))
 	for key := range config.ZodiacSigns {
-		dailyTask(key)
-		time.Sleep(config.TIME_BETWEEN_POSTS)
+		keys = append(keys, key)
 	}
+
+	rand.Shuffle(len(keys), func(i, j int) { keys[i], keys[j] = keys[j], keys[i] })
+
+	firstGroup := keys[:4]
+	secondGroup := keys[4:8]
+	thirdGroup := keys[8:]
+
+	processGroup(firstGroup)
+	processGroup(secondGroup)
+	processGroup(thirdGroup)
 
 	log.Println("# END DAILY TASK #")
 }
@@ -45,10 +55,6 @@ func CompatibilityAndExplanation() {
 	log.Println("# END DAILY TASK #")
 }
 
-func SingleTask(sign string) {
-	dailyTask(sign)
-}
-
 func DailyMoonPhase() {
 	log.Println("# START MOON TASK #")
 
@@ -65,7 +71,24 @@ func DailyMoonPhase() {
 	log.Println("# END MOON TASK #")
 }
 
-func dailyTask(sign string) {
+func processGroup(group []string) {
+	groupDayIds := []string{}
+	groupDaySigns := []string{}
+
+	for _, key := range group {
+		groupDayIds = append(groupDayIds, getDailyHoroscopeForSign(key))
+		groupDaySigns = append(groupDaySigns, config.ZodiacSignsTags[key])
+		time.Sleep(config.TIME_BETWEEN_SCRAP)
+	}
+
+	log.Println("groupDayIds", groupDayIds)
+	log.Println("groupDaySigns", groupDaySigns)
+
+	x.TweetDailyHoroscope(strings.Join(groupDaySigns, " "), groupDayIds)
+	time.Sleep(config.TIME_BETWEEN_POSTS)
+}
+
+func getDailyHoroscopeForSign(sign string) string {
 	web := config.GetEnvVar("SCRAP_WEB")
 
 	dailyHoroscope := scrap.UrlToDailyHoroscope(web + sign + config.WEB_SUFFIX)
@@ -77,7 +100,7 @@ func dailyTask(sign string) {
 	esSign := config.ZodiacSigns[sign]
 	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
 
-	x.TweetDailyHoroscope(esSign, tweet, 320.0)
+	return x.GetDailyHoroscopeForSign(esSign, tweet, 320.0)
 }
 
 type Friendship compatibilities.Friendship
