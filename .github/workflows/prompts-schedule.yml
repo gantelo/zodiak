@@ -1,0 +1,40 @@
+name: Prompt getter setter
+
+on:
+  schedule:
+  - cron: '0 0 * * 0'
+
+  workflow_dispatch:
+
+jobs:
+  stale:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Get Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+      - name: Run Ollama 3
+        run: sudo systemctl start ollama
+      - name: Create Ollama model
+        run: |
+              curl http://localhost:11434/api/create -d '{
+                "name": "guru", 
+                "modelfile": "FROM llama3\nSYSTEM You are a zodiac guru that tweets."    
+              }'
+      - name: Get prompts
+        run: |
+              curl -X POST -H "Content-Type: application/json" -d '{"model": "guru", "prompt": "give me 7 random prompts to ask you later about what signs are best at. only enumerate them with no overhead, and do not number them", "stream": false}' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alnum:]|[:space:]]"; "")' | jq -s > data/prompts.json
+
+
+      # Commit all changed files back to the repository
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Updated info for the week"
+          file_pattern: 'data/*.json'
