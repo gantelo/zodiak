@@ -33,7 +33,7 @@ jobs:
                 "model": "guru",
                 "prompt": "give me 7 random prompts in present continuous to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no overhead, and do not number them",
                 "stream": false
-              }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space"]]"; "")' | jq -s > data/prompts.json
+              }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > data/prompts.json
       - name: Get answers
         run: |
               cat data/prompts.json | jq -r '.[]' | while ((i++)); read -r line; do 
@@ -41,7 +41,7 @@ jobs:
                   "model": "guru",
                   "prompt": "how good are signs $line? give me results for each sign. only enumerate them with no overhead, and do not number them",
                   "stream": false
-                }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:]]"; "")' | jq -s > "data/$i.json"
+                }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > "data/$i.json"
               done
               i=0
 
