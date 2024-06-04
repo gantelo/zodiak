@@ -1,4 +1,5 @@
 # Zodiak
+[![Prompt getter setter](https://github.com/gantelo/zodiak/actions/workflows/prompts-schedule.yml/badge.svg)](https://github.com/gantelo/zodiak/actions/workflows/prompts-schedule.yml) [![Fly Deploy](https://github.com/gantelo/zodiak/actions/workflows/fly.yml/badge.svg)](https://github.com/gantelo/zodiak/actions/workflows/fly.yml)
 
 This is an automated bot for X that scraps horoscopes in a web and translates them to spanish and then posts them.
 
