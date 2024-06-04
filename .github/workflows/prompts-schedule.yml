@@ -25,7 +25,7 @@ jobs:
         run: |
               curl http://localhost:11434/api/create -d '{
                 "name": "guru", 
-                "modelfile": "FROM llama3\nSYSTEM You are a zodiac guru. You provide only what asked without telling the user anything else. You are asked to provide 7 random prompts to ask you later about what signs are best at. only enumerate them with no overhead, and do not number them"    
+                "modelfile": "FROM llama3\nSYSTEM You are a zodiac guru. You provide only what asked without telling the user anything else"
               }'
       - name: Get prompts
         run: |
@@ -33,7 +33,7 @@ jobs:
                 "model": "guru",
                 "prompt": "give me 7 random prompts in present continuous to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no overhead, and do not number them",
                 "stream": false
-              }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:]]"; "")' | jq -s > data/prompts.json
+              }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space"]]"; "")' | jq -s > data/prompts.json
       - name: Get answers
         run: |
               cat data/prompts.json | jq -r '.[]' | while ((i++)); read -r line; do 
