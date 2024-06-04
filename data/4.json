@@ -1,14 +1,14 @@
 [
-  "Aries 7/10",
-  "Taurus 6/10",
-  "Gemini 8/10",
-  "Cancer 5/10",
-  "Leo 9/10",
-  "Virgo 4/10",
-  "Libra 8/10",
-  "Scorpio 7/10",
-  "Sagittarius 9/10",
-  "Capricorn 6/10",
-  "Aquarius 7/10",
-  "Pisces 5/10"
+  "Here is the list of signs scores at $line:",
+  "",
+  ". Pisces: 7/10 (Natural charm, but may be too laid-back)",
+  ". Aries: 9/10 (Confident and direct, but can be impulsive)",
+  ". Leo: 8.5/10 (Charismatic, but may be self-centered)",
+  ". Libra: 7.5/10 (Charming, but indecisive)",
+  ". Scorpio: 8/10 (Passionate, but intense)",
+  ". Sagittarius: 9/10 (Philosophical and adventurous, but blunt)",
+  ". Capricorn: 6/10 (Disciplined, but serious)",
+  ". Aquarius: 8/10 (Humanitarian and innovative, but detached)",
+  ". Taurus: 6.5/10 (Reliable, but set in their ways)",
+  "0. Gemini: 8.5/10 (Curious and versatile, but flighty)"
 ]
