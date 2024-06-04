@@ -31,7 +31,7 @@ jobs:
         run: |
               curl -X POST -H "Content-Type: application/json" -d '{
                 "model": "guru",
-                "prompt": "give me 7 random prompts to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no response, i only want the list of prompts.",
+                "prompt": "give me 7 random prompts to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no numbering. Please only provide the list only and nothing else",
                 "stream": false
               }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > data/prompts.json
       - name: Get answers
@@ -39,7 +39,7 @@ jobs:
               cat data/prompts.json | jq -r '.[]' | while ((i++)); read -r line; do 
                 curl -X POST -H "Content-Type: application/json" -d '{
                   "model": "guru",
-                  "prompt": "how good are signs $line? give me results for each sign with a little description of why they have that score. only enumerate them with no overhead,i only want the list",
+                  "prompt": "how good are signs at $line? give me results for each sign with a little description of why they have that score. only enumerate them with no overhead,i only want the list",
                   "stream": false
                 }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > "data/$i.json"
               done
