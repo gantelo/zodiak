@@ -33,11 +33,14 @@ var resources embed.FS
 //go:embed assets/*
 var assets embed.FS
 
+//go:embed data/*
+var data embed.FS
+
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 func main() {
 	images.Assets = assets
-	daily.Data = assets
+	daily.Data = data
 
 	port := os.Getenv("PORT")
 	if port == "" {

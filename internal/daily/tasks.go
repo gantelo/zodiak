@@ -20,13 +20,13 @@ var Data embed.FS
 func SignsBestAt() {
 	log.Println("# START SIGNSBEST TASK #")
 
-	prompts, err := Data.ReadFile("assets/prompts.json")
+	prompts, err := Data.ReadFile("data/prompts.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	weekday := int(time.Now().Weekday())
-	responses, err := Data.ReadFile("assets/" + strconv.Itoa(weekday+1) + ".json")
+	responses, err := Data.ReadFile("data/" + strconv.Itoa(weekday+1) + ".json")
 
 	if err != nil {
 		log.Fatal(err)
