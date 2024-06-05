@@ -39,9 +39,9 @@ jobs:
               cat data/prompts.json | jq -r '.[]' | while ((i++)); read -r line; do 
                 curl -X POST -H "Content-Type: application/json" -d '{
                   "model": "guru",
-                  "prompt": "how good are signs at $line? give me results for each sign with a little description of why they have that score. only enumerate them with no overhead,i only want the list",
+                  "prompt": "how good are signs at $line? give me results for each of the signs with a little description of why they have that score. only enumerate them with no overhead,i only want the list. the list should have SignName - Score - Description",
                   "stream": false
-                }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > "data/$i.json"
+                }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | gsub("\n"; "") | gsub("\""; "")' | jq -s > "data/$i.json"
               done
               i=0
 

@@ -110,9 +110,16 @@ func textOnImg(
 		dc.DrawStringWrapped(subtitle, x, yOffsets.Subtitle, 0.5, 0.5, maxWidth, 0.85, gg.AlignCenter)
 	}
 
+	var alignment gg.Align
+	if imgType == ctypes.BestAt {
+		alignment = gg.AlignLeft
+	} else {
+		alignment = gg.AlignCenter
+	}
+
 	dc.SetFontFace(fonts.Body)
 	dc.SetColor(getColorByType(imgType))
-	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1, gg.AlignCenter)
+	dc.DrawStringWrapped(text, x, y, 0.5, 0.5, maxWidth, 1, alignment)
 
 	return dc.Image()
 }
@@ -154,6 +161,8 @@ func loadFontFace(file fs.File, bodySize float64, imgType ctypes.ImgGen) Fonts {
 		title = config.COMPAT_TITLE_SIZE
 		title2 = config.COMPAT_TITLE2_SIZE
 		subtitle = config.COMPAT_SUBTITLE_SIZE
+	case ctypes.BestAt:
+		title = config.BESTAT_TITLE_SIZE
 	}
 
 	faceBody := truetype.NewFace(font, &truetype.Options{
@@ -193,6 +202,10 @@ func fontSizeByLength(len int, imgType ctypes.ImgGen) float64 {
 		maxFs = config.MOON_MAX_FONT_SIZE
 		medFs = config.MOON_MED_FONT_SIZE
 		minFs = config.MOON_MIN_FONT_SIZE
+	case ctypes.BestAt:
+		maxFs = config.BESTAT_MAX_FONT_SIZE
+		medFs = config.BESTAT_MED_FONT_SIZE
+		minFs = config.BESTAT_MIN_FONT_SIZE
 	}
 
 	if len <= 650 {
@@ -234,6 +247,10 @@ func calculateOffsets(imgHeight int, imgType ctypes.ImgGen) TextOffsets {
 		title = 120
 		title2 = 120
 		body = float64(imgHeight / 2)
+		subtitle = float64(imgHeight - 155)
+	case ctypes.BestAt:
+		title = 100
+		body = float64(imgHeight/2) + 35
 		subtitle = float64(imgHeight - 155)
 	}
 

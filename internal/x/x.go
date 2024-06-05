@@ -3,6 +3,7 @@ package x
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"image/color"
 	"io"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"zodiak/internal/config"
 	"zodiak/internal/ctypes"
 	"zodiak/internal/images"
+	stringutils "zodiak/internal/stringUtils"
 
 	"github.com/dghubble/oauth1"
 	"github.com/goodsign/monday"
@@ -69,6 +71,23 @@ func TweetDailyCompatibilityImg(text string, tweet string, maxWidthOffset float6
 	uploadImage(text)
 
 	log.Printf("Daily Compatibility Tweet success, length: %d\n", len(tweet))
+}
+
+func TweetDailyBestAtImg(text string, body []stringutils.BestAt, title string) {
+	log.Println("Daily Best At Tweet begins")
+
+	imgPath := "assets/prompt.png"
+
+	var tweet string
+	for _, item := range body {
+		tweet += fmt.Sprintf("%s: %s\n \n", item.Name, item.Description)
+	}
+
+	images.GenerateImageFromTemplate(imgPath, tweet, 160.0, title, "", "", color.RGBA{R: 0, G: 0, B: 0, A: 0}, ctypes.BestAt)
+
+	uploadImage(text)
+
+	log.Printf("Daily Best At Tweet success, length: %d\n", len(tweet))
 }
 
 func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {

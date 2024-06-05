@@ -1,8 +1,11 @@
 package daily
 
 import (
+	"embed"
 	"log"
 	"math/rand"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 	"zodiak/internal/compatibilities"
@@ -12,6 +15,29 @@ import (
 	stringutils "zodiak/internal/stringUtils"
 	"zodiak/internal/x"
 )
+
+var Data embed.FS
+
+func SignsBestAt() {
+	log.Println("# START SIGNSBEST TASK #")
+
+	prompts, err := os.ReadFile("data/prompts.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	weekday := int(time.Now().Weekday())
+	responses, err := os.ReadFile("data/" + strconv.Itoa(weekday+1) + ".json")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	prompt := stringutils.ParseBestAtPrompt(prompts)
+	signsBestAt(prompt, responses)
+
+	log.Println("# END SIGNSBEST TASK #")
+}
 
 func Horoscope() {
 	log.Println("# START DAILY TASK #")
@@ -177,4 +203,16 @@ func dailyCompatibilityMapZodiacsToTweet(zodiac1 string, zodiac2 string, categor
 	subtitle := imgHeader
 
 	x.TweetDailyCompatibilityImg(header, categoryNow.Summary, 290.0, names, subtitle, categoryNow.Match)
+}
+
+func signsBestAt(prompt string, responses []byte) {
+
+	service := deepl.NewDeepLService()
+	translation := service.TranslateToSpanish(prompt)
+
+	fullPrompt := "¿Qué tan buenos son los signos en " + strings.TrimSpace(strings.ToLower(translation)) + "?"
+
+	arr := stringutils.ParseBestAtArray(responses)
+
+	x.TweetDailyBestAtImg("#signos #horoscopo", arr, fullPrompt)
 }

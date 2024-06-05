@@ -1,14 +1,16 @@
 [
-  "Here is the list of signs scores at $line:",
+  "Here is the list:",
   "",
-  ". Pisces: 7/10 (Natural charm, but may be too laid-back)",
-  ". Aries: 9/10 (Confident and direct, but can be impulsive)",
-  ". Leo: 8.5/10 (Charismatic, but may be self-centered)",
-  ". Libra: 7.5/10 (Charming, but indecisive)",
-  ". Scorpio: 8/10 (Passionate, but intense)",
-  ". Sagittarius: 9/10 (Philosophical and adventurous, but blunt)",
-  ". Capricorn: 6/10 (Disciplined, but serious)",
-  ". Aquarius: 8/10 (Humanitarian and innovative, but detached)",
-  ". Taurus: 6.5/10 (Reliable, but set in their ways)",
-  "0. Gemini: 8.5/10 (Curious and versatile, but flighty)"
+  "1. Aries - 6/10 - Aries can be impulsive and reckless, but also passionate and determined.",
+  "2. Taurus - 8/10 - Taurus are reliable and practical, with a strong sense of responsibility.",
+  "3. Gemini - 7/10 - Geminis are curious and adaptable, but sometimes scatterbrained.",
+  "4. Cancer - 5/10 - Cancers are caring and emotional, but can be overly sensitive.",
+  "5. Leo - 9/10 - Leos are confident and charismatic, with a natural flair for drama.",
+  "6. Virgo - 8/10 - Virgos are analytical and hardworking, with a strong attention to detail.",
+  "7. Libra - 4/10 - Librans are diplomatic and social, but can be indecisive and overly focused on appearances.",
+  "8. Scorpio - 9/10 - Scorpios are intense and passionate, with a strong sense of intuition.",
+  "9. Sagittarius - 6/10 - Sagittarians are adventurous and optimistic, but sometimes reckless and impulsive.",
+  "10. Capricorn - 7/10 - Capricorns are responsible and ambitious, but can be overly serious and critical.",
+  "11. Aquarius - 8/10 - Aquarians are independent and humanitarian, with a strong sense of justice.",
+  "12. Pisces - 3/10 - Pisces are empathetic and imaginative, but sometimes dreamy and spaced out."
 ]

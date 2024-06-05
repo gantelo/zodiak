@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -34,10 +33,14 @@ var resources embed.FS
 //go:embed assets/*
 var assets embed.FS
 
+//go:embed data/*
+var data embed.FS
+
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 func main() {
 	images.Assets = assets
+	daily.Data = data
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -53,20 +56,6 @@ func main() {
 		t.ExecuteTemplate(w, "index.html.tmpl", data)
 	})
 
-	http.HandleFunc("/xd", func(w http.ResponseWriter, r *http.Request) {
-		sign := r.FormValue("sign")
-		reqPass := r.FormValue("pass")
-
-		pass := os.Getenv("API_PASS")
-
-		if pass == reqPass {
-			daily.SingleTask(sign)
-			io.WriteString(w, "Added for "+sign+"!\n")
-		} else {
-			io.WriteString(w, "xd, no!!, "+r.RemoteAddr)
-		}
-	})
-
 	log.Println("listening on", port)
 	go http.ListenAndServe("0.0.0.0:8080", nil)
 
@@ -77,5 +66,7 @@ func main() {
 	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR).Do(daily.Compatibility)
 	s.Every(1).Day().At(config.START_DAILY_COMPATIBILITY_TASK_HOUR_2).Do(daily.CompatibilityAndExplanation)
 	s.Every(1).Day().At(config.START_DAILY_MOON_PHASE_TASK_HOUR).Do(daily.DailyMoonPhase)
+	s.Every(1).Day().At(config.START_DAILY_BESTAT_TASK_HOUR).Do(daily.SignsBestAt)
 	s.StartBlocking()
+
 }
