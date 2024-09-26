@@ -22,14 +22,16 @@ func SignsBestAt() {
 
 	prompts, err := Data.ReadFile("data/prompts.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	weekday := int(time.Now().Weekday())
 	responses, err := Data.ReadFile("data/" + strconv.Itoa(weekday+1) + ".json")
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	prompt := stringutils.ParseBestAtPrompt(prompts)
@@ -94,6 +96,11 @@ func dailyTask(sign string) {
 	web := config.GetEnvVar("SCRAP_WEB")
 
 	dailyHoroscope := scrap.UrlToDailyHoroscope(web + sign + config.WEB_SUFFIX)
+
+	if len(dailyHoroscope) == 0 {
+		log.Println("No daily horoscope found")
+		return
+	}
 
 	service := deepl.NewDeepLService()
 

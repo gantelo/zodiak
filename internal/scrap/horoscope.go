@@ -13,7 +13,8 @@ func UrlToDailyHoroscope(url string) string {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return ""
 	}
 
 	defer resp.Body.Close()
@@ -21,7 +22,8 @@ func UrlToDailyHoroscope(url string) string {
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return ""
 	}
 
 	class := config.GetEnvVar("SCRAP_CLASS")
@@ -32,11 +34,13 @@ func UrlToDailyHoroscope(url string) string {
 	secondParagraph := divs.First().Find("p").Last().Text()
 
 	if len(firstParagraph) == 0 {
-		log.Fatal("no first paragraph")
+		log.Println(err)
+		return ""
 	}
 
 	if len(secondParagraph) == 0 {
-		log.Fatal("no second paragraph")
+		log.Println(err)
+		return ""
 	}
 
 	log.Printf("Scrapper success with total length: %d\n", len(firstParagraph)+len(secondParagraph))
