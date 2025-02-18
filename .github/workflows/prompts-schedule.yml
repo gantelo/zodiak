@@ -32,7 +32,7 @@ jobs:
         run: |
               curl -X POST -H "Content-Type: application/json" -d '{
                 "model": "guru",
-                "prompt": "give me 7 random prompts to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no numbering. Please only provide the list only and nothing else",
+                "prompt": "give me 7 random prompts to ask you later about what signs are best at. make it sign agnostic, and only enumerate them with no numbering. Please only provide the list only and nothing else. Omit the `here is your list` line",
                 "stream": false
               }' http://localhost:11434/api/generate | jq '.response' | jq 'gsub("[\\n\\t]"; "$$")' | jq -Rsc 'split("$$")' | jq -c '.[] | sub("\n"; "") | sub("\""; "") | sub("[^[:alpha:][:space:]]"; "")' | jq -s > data/prompts.json
       - name: Get answers

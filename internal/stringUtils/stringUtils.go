@@ -30,6 +30,10 @@ func ParseBestAtPrompt(data []byte) string {
 		panic(err)
 	}
 
+	if prompts[1] == "" {
+		prompts = prompts[2:]
+	}
+
 	return prompts[time.Now().Weekday()]
 }
 
