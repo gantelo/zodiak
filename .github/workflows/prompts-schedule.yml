@@ -24,8 +24,9 @@ jobs:
       - name: Create Ollama model
         run: |
               curl http://localhost:11434/api/create -d '{
-                "name": "guru", 
-                "modelfile": "FROM llama3\nSYSTEM You are a zodiac guru. You provide only what asked without telling the user anything else"
+                "model": "guru", 
+                "modelfile": "FROM llama3\nSYSTEM You are a zodiac guru. You provide only what asked without telling the user anything else",
+                "from": "llama3"
               }'
       - name: Get prompts
         run: |
