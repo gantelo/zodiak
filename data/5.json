@@ -1,15 +1,16 @@
 [
-  "Here is the list of signs at $line, along with their scores and descriptions:",
+  "Here is the list of zodiac signs with their scores and descriptions:",
   "",
-  "1. Taurus - 8/10 - Reliable and practical, but can be stubborn when it comes to change.",
-  "2. Gemini - 7.5/10 - Quick-witted and adaptable, but may struggle with commitment and intimacy.",
-  "3. Cancer - 9/10 - Emotional and nurturing, with a strong sense of family and belonging.",
-  "4. Leo - 8.5/10 - Confident and charismatic, but can be prideful and dominating at times.",
-  "5. Virgo - 8/10 - Analytical and hardworking, but may struggle with self-doubt and perfectionism.",
-  "6. Libra - 7.5/10 - Diplomatic and social, but may prioritize fairness over personal needs.",
-  "7. Scorpio - 9/10 - Passionate and intense, with a strong desire for control and insight.",
-  "8. Sagittarius - 8.5/10 - Adventurous and optimistic, but can be reckless and impatient at times.",
-  "9. Capricorn - 8/10 - Ambitious and responsible, but may struggle with emotional repression and authority issues.",
-  "10. Aquarius - 8.5/10 - Humanitarian and independent, but may prioritize intellectual pursuits over personal connections.",
-  "11. Pisces - 7.5/10 - Compassionate and imaginative, but can be overly sensitive and dreamy at times."
+  "1. Aries - 8/10 - Confident and action-oriented, but can be impulsive and reckless.",
+  "2. Taurus - 7.5/10 - Reliable and practical, but can be stubborn and resistant to change.",
+  "3. Gemini - 9/10 - Quick-witted and adaptable, but can be scattered and indecisive.",
+  "4. Cancer - 8.5/10 - Nurturing and empathetic, but can be overly sensitive and moody.",
+  "5. Leo - 9.5/10 - Confident and charismatic, but can be prideful and dominant.",
+  "6. Virgo - 8/10 - Analytical and hardworking, but can be perfectionistic and critical.",
+  "7. Libra - 9/10 - Diplomatic and social, but can be indecisive and people-pleasing.",
+  "8. Scorpio - 9/10 - Passionate and intense, but can be secretive and emotionally guarded.",
+  "9. Sagittarius - 8.5/10 - Adventurous and optimistic, but can be reckless and tactless.",
+  "10. Capricorn - 7.5/10 - Responsible and ambitious, but can be strict and unyielding.",
+  "11. Aquarius - 9/10 - Humanitarian and independent, but can be detached and unconventional.",
+  "12. Pisces - 8/10 - Imaginative and compassionate, but can be dreamy and easily influenced."
 ]
