@@ -1,15 +1,16 @@
 [
   "Here is the list of signs at $LINE, along with their scores and descriptions:",
   "",
-  "1. Taurus - 6/10 - Practicality and sensibility make Taurus a reliable choice, but a lack of excitement may hold them back from reaching full potential.",
-  "2. Gemini - 8/10 - Intellectual curiosity and adaptability drive Geminis to explore new ideas, making them well-suited for fast-paced environments.",
-  "3. Cancer - 7/10 - Emotional intuition and nurturing nature make Cancers excellent caregivers, but a tendency to hold onto the past may limit their growth.",
-  "4. Leo - 9/10 - Confidence and charisma make Leos natural performers, but a need for validation can lead to reckless decisions.",
-  "5. Virgo - 8/10 - Analytical minds and attention to detail serve Virgos well in technical or scientific pursuits, but perfectionism can be overwhelming.",
-  "6. Libra - 7/10 - Diplomatic nature and sense of justice make Libras excellent mediators, but indecisiveness can hinder progress.",
-  "7. Scorpio - 9/10 - Intensity and passion drive Scorpios to uncover hidden truths, making them formidable investigators or leaders.",
-  "8. Sagittarius - 8/10 - Philosopher's mindset and love for exploration make Sagittarians adventurous and open-minded, but a tendency to dismiss details can lead to mistakes.",
-  "9. Capricorn - 7/10 - Ambition and discipline drive Capricorns to achieve their goals, but a lack of emotional awareness can hold them back from forming meaningful connections.",
-  "10. Aquarius - 8/10 - Humanitarian instincts and innovative thinking make Aquarians well-suited for revolutionary ideas or humanitarian work, but a tendency to ignore personal needs can lead to burnout.",
-  "11. Pisces - 6/10 - Empathetic nature and creative potential make Piscies excellent artists or healers, but a lack of boundaries can lead to exploitation."
+  "1. Aries - 6/10 - Aries tend to be impulsive and emotional, but they also have a strong sense of self-preservation.",
+  "2. Taurus - 7/10 - Tauruses are reliable and practical, but they can also be stubborn and resistant to change.",
+  "3. Gemini - 8/10 - Geminis are curious and adaptable, making them well-suited for $LINE's fast-paced environment.",
+  "4. Cancer - 5/10 - Cancers are empathetic and nurturing, but they may struggle with the aggressive nature of $LINE.",
+  "5. Leo - 9/10 - Leos are confident and charismatic, which can serve them well in a competitive environment like $LINE.",
+  "6. Virgo - 8/10 - Virgos are analytical and hardworking, making them strong contenders for $LINE's challenges.",
+  "7. Libra - 6/10 - Librans value fairness and harmony, but they may struggle with the intensity and conflict inherent to $LINE.",
+  "8. Scorpio - 9/10 - Scorpios are passionate and resourceful, giving them an edge in a competitive environment like $LINE.",
+  "9. Sagittarius - 7/10 - Sagittarians are optimistic and enthusiastic, which can help them navigate the ups and downs of $LINE.",
+  "10. Capricorn - 8/10 - Capricorns are disciplined and responsible, making them well-suited for the structure and routine required by $LINE.",
+  "11. Aquarius - 7/10 - Aquarians are innovative and independent, but they may struggle with the need to compromise in a team-based environment like $LINE.",
+  "12. Pisces - 5/10 - Pisces are empathetic and imaginative, but they may find the intensity and competition of $LINE overwhelming."
 ]
