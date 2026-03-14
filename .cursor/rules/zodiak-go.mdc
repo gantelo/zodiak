@@ -1,0 +1,19 @@
+---
+description: Core Go layout and config conventions for the zodiak service. Applies when editing Go files.
+globs: "**/*.go"
+alwaysApply: false
+---
+
+# Zodiak Go Conventions
+
+- **Keep `main.go` thin**: only embed assets/data, wire HTTP handlers, and register gocron jobs. Put business logic into `internal/` packages.
+- **Use `internal/` packages**: prefer small focused packages like `config`, `daily`, `scrap`, `deepl`, `x`, `images`, `compatibilities`, `ctypes`, `stringUtils`, and `http`.
+- **Read env via `config`**: use `config.GetEnvVar` for required configuration and document new env vars in `.env.template` and `README.md`.
+- **Centralize constants**: add shared constants (schedule times, colors, font sizes, image paths) to `internal/config/constants.go` instead of scattering literals.
+- **Reuse existing flows**:
+  - Daily tasks live in `internal/daily` and follow the pattern: scrape/get data → translate (DeepL) → image generation (if needed) → post via `x`.
+  - Image generation goes through `internal/images` with `ctypes.ImgGen` rather than ad-hoc drawing code.
+- **Follow existing naming**:
+  - Exported functions like `Horoscope`, `Compatibility`, `DailyMoonPhase`, `SignsBestAt`, `TweetDailyHoroscope`.
+  - Unexported helpers like `dailyTask`, `getDailyRandomSignsOfTheDay`, `dailyCompatibilityMapZodiacsToTweet`.
+

@@ -108,8 +108,49 @@ func dailyTask(sign string) {
 
 	esSign := config.ZodiacSigns[sign]
 	tweet := strings.ReplaceAll(translation, ". ", ".\n \n")
+	caption := buildHoroscopeCaption(translation, esSign)
 
-	x.TweetDailyHoroscope(esSign, tweet, 320.0)
+	x.TweetDailyHoroscope(esSign, tweet, 320.0, caption)
+}
+
+func buildHoroscopeCaption(translation string, esSign string) string {
+	const maxLength = 280
+
+	baseHashtags := "\n\n#" + esSign + " #diario #horoscopo #pollo #horoscopollo"
+
+	trimmed := strings.TrimSpace(translation)
+	if len(trimmed) == 0 {
+		return "#" + esSign + " #diario #horoscopo #pollo #horoscopollo"
+	}
+
+	parts := strings.SplitN(trimmed, ".", 2)
+	hook := strings.TrimSpace(parts[0])
+	if len(hook) == 0 {
+		hook = trimmed
+	}
+
+	remaining := maxLength - len(baseHashtags)
+	if remaining <= 0 {
+		return "#" + esSign + " #diario #horoscopo #pollo #horoscopollo"
+	}
+
+	if len(hook) > remaining {
+		hookRunes := []rune(hook)
+		if len(hookRunes) > remaining {
+			hookRunes = hookRunes[:remaining]
+		}
+		short := strings.TrimSpace(string(hookRunes))
+		if idx := strings.LastIndex(short, " "); idx > 0 {
+			short = strings.TrimSpace(short[:idx])
+		}
+		hook = short
+	}
+
+	if len(hook) == 0 {
+		return "#" + esSign + " #diario #horoscopo #pollo #horoscopollo"
+	}
+
+	return hook + baseHashtags
 }
 
 type Friendship compatibilities.Friendship

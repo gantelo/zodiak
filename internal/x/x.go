@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 	"zodiak/internal/config"
 	"zodiak/internal/ctypes"
@@ -90,7 +91,7 @@ func TweetDailyBestAtImg(text string, body []stringutils.BestAt, title string) {
 	log.Printf("Daily Best At Tweet success, length: %d\n", len(tweet))
 }
 
-func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
+func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64, caption string) {
 	log.Println("Daily Horoscope Tweet begins")
 
 	imgPath := config.GetImgPath(sign)
@@ -98,7 +99,11 @@ func TweetDailyHoroscope(sign string, tweet string, maxWidthOffset float64) {
 	currentDay := getCurrentDay()
 
 	images.GenerateImageFromTemplate(imgPath, tweet, maxWidthOffset, "", "", currentDay, config.HOROSCOPE_TEXT_COLOR, ctypes.Horoscope)
-	textForImg := "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
+
+	textForImg := strings.TrimSpace(caption)
+	if len(textForImg) == 0 {
+		textForImg = "#" + sign + " #diario #horoscopo #pollo #horoscopollo"
+	}
 
 	uploadImage(textForImg)
 
